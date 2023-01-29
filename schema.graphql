@@ -1,6 +1,21 @@
-type ExampleEntity @entity {
+type Goal @entity {
   id: ID!
-  count: BigInt!
-  previousAdmin: Bytes! # address
-  newAdmin: Bytes! # address
+  # Params
+  createdTimestamp: BigInt!
+  authorAddress: String!
+  authorStake: BigInt!
+  deadlineTimestamp: BigInt!
+  isClosed: Boolean!
+  isAchieved: Boolean!
+  # Watchers
+  watchers: [GoalWatcher!]! @derivedFrom(field: "goal")
+  watcherAddresses: [String!]!
+  watchersNumber: Int!
+}
+
+type GoalWatcher @entity {
+  id: ID! # combination of goal id and account address
+  goal: Goal!
+  addedTimestamp: BigInt!
+  accountAddress: String!
 }
