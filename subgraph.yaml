@@ -15,10 +15,16 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Transfer
+        - ParamsSet
+        - WatcherSet
       abis:
         - name: Goal
           file: ./abis/Goal.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
+        - event: ParamsSet(indexed uint256,(uint256,address,uint256,uint256,bool,bool))
+          handler: handleParamsSet
+        - event: WatcherSet(indexed uint256,indexed address,(uint256,address))
+          handler: handleWatcherSet
       file: ./src/handlers/goalHandlers.ts
