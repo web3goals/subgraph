@@ -1,5 +1,6 @@
 type Goal @entity {
   id: ID!
+  uri: String!
   # Params
   createdTimestamp: BigInt!
   authorAddress: String!

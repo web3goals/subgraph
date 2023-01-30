@@ -1,5 +1,10 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
-import { ParamsSet, Transfer, WatcherSet } from "../../generated/Goal/Goal";
+import {
+  ParamsSet,
+  Transfer,
+  URISet,
+  WatcherSet,
+} from "../../generated/Goal/Goal";
 import { Goal, GoalWatcher } from "../../generated/schema";
 
 /**
@@ -9,7 +14,8 @@ export function handleTransfer(event: Transfer): void {
   let goal = Goal.load(event.params.tokenId.toString());
   if (!goal) {
     goal = new Goal(event.params.tokenId.toString());
-    // Defaults for par ams
+    goal.uri = "";
+    // Defaults for params
     goal.createdTimestamp = BigInt.zero();
     goal.authorAddress = Address.zero().toHexString();
     goal.authorStake = BigInt.zero();
@@ -21,6 +27,20 @@ export function handleTransfer(event: Transfer): void {
     goal.watchersNumber = 0;
     goal.save();
   }
+}
+
+/**
+ * Handle a uri set event to update a goal.
+ */
+export function handleURISet(event: URISet): void {
+  // Load goal
+  let goal = Goal.load(event.params.tokenId.toString());
+  if (!goal) {
+    return;
+  }
+  // Update goal
+  goal.uri = event.params.tokenURI;
+  goal.save();
 }
 
 /**

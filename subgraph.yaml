@@ -17,6 +17,7 @@ dataSources:
         - Transfer
         - ParamsSet
         - WatcherSet
+        - URISet
       abis:
         - name: Goal
           file: ./abis/Goal.json
@@ -27,4 +28,6 @@ dataSources:
           handler: handleParamsSet
         - event: WatcherSet(indexed uint256,indexed address,(uint256,address))
           handler: handleWatcherSet
+        - event: URISet(indexed uint256,string)
+          handler: handleURISet
       file: ./src/handlers/goalHandlers.ts
