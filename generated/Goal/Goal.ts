@@ -272,6 +272,14 @@ export class WatcherSetWatcherStruct extends ethereum.Tuple {
   get accountAddress(): Address {
     return this[1].toAddress();
   }
+
+  get isAccepted(): boolean {
+    return this[2].toBoolean();
+  }
+
+  get extraDataURI(): string {
+    return this[3].toString();
+  }
 }
 
 export class Goal__getParamsResultValue0Struct extends ethereum.Tuple {
@@ -307,6 +315,14 @@ export class Goal__getWatchersResultValue0Struct extends ethereum.Tuple {
 
   get accountAddress(): Address {
     return this[1].toAddress();
+  }
+
+  get isAccepted(): boolean {
+    return this[2].toBoolean();
+  }
+
+  get extraDataURI(): string {
+    return this[3].toString();
   }
 }
 
@@ -450,7 +466,7 @@ export class Goal extends ethereum.SmartContract {
   getWatchers(tokenId: BigInt): Array<Goal__getWatchersResultValue0Struct> {
     let result = super.call(
       "getWatchers",
-      "getWatchers(uint256):((uint256,address)[])",
+      "getWatchers(uint256):((uint256,address,bool,string)[])",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
 
@@ -462,7 +478,7 @@ export class Goal extends ethereum.SmartContract {
   ): ethereum.CallResult<Array<Goal__getWatchersResultValue0Struct>> {
     let result = super.tryCall(
       "getWatchers",
-      "getWatchers(uint256):((uint256,address)[])",
+      "getWatchers(uint256):((uint256,address,bool,string)[])",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
     if (result.reverted) {
@@ -619,6 +635,40 @@ export class Goal extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
+  }
+}
+
+export class AcceptWatcherCall extends ethereum.Call {
+  get inputs(): AcceptWatcherCall__Inputs {
+    return new AcceptWatcherCall__Inputs(this);
+  }
+
+  get outputs(): AcceptWatcherCall__Outputs {
+    return new AcceptWatcherCall__Outputs(this);
+  }
+}
+
+export class AcceptWatcherCall__Inputs {
+  _call: AcceptWatcherCall;
+
+  constructor(call: AcceptWatcherCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get watcherAddress(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+}
+
+export class AcceptWatcherCall__Outputs {
+  _call: AcceptWatcherCall;
+
+  constructor(call: AcceptWatcherCall) {
+    this._call = call;
   }
 }
 
@@ -1101,6 +1151,10 @@ export class WatchCall__Inputs {
 
   get tokenId(): BigInt {
     return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get extraDataURI(): string {
+    return this._call.inputValues[1].value.toString();
   }
 }
 
