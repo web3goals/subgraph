@@ -1,3 +1,10 @@
+type Account @entity {
+  id: ID! # account address
+  achievedGoals: Int!
+  failedGoals: Int!
+  motivatedGoals: Int!
+}
+
 type Goal @entity {
   id: ID!
   uri: String!

@@ -1,11 +1,14 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
+  ClosedAsAchieved,
+  ClosedAsFailed,
   ParamsSet,
   Transfer,
   URISet,
   WatcherSet,
 } from "../../generated/Goal/Goal";
 import { Goal, GoalWatcher } from "../../generated/schema";
+import { loadOrCreateAccount } from "../utils";
 
 /**
  * Handle a tranfer event to create a goal with default values.
@@ -108,4 +111,41 @@ export function handleWatcherSet(event: WatcherSet): void {
     goal.acceptedWatcherAddresses = newAcceptedWatcherAddresses;
   }
   goal.save();
+}
+
+/**
+ * Handle a closed as achieved event to update accounts.
+ */
+export function handleClosedAsAchieved(event: ClosedAsAchieved): void {
+  // Load goal
+  let goal = Goal.load(event.params.tokenId.toString());
+  if (!goal) {
+    return;
+  }
+  // Update account of goal author
+  let account = loadOrCreateAccount(goal.authorAddress);
+  account.achievedGoals = account.achievedGoals + 1;
+  account.save();
+  // Update accounts of goal accepted watchers
+  for (let i = 0; i < goal.acceptedWatcherAddresses.length; i++) {
+    let watcherAddress = goal.acceptedWatcherAddresses[i];
+    let watcherAccount = loadOrCreateAccount(watcherAddress);
+    watcherAccount.motivatedGoals = watcherAccount.motivatedGoals + 1;
+    watcherAccount.save();
+  }
+}
+
+/**
+ * Handle a closed as failed event to update accounts.
+ */
+export function handleClosedAsFailed(event: ClosedAsFailed): void {
+  // Load goal
+  let goal = Goal.load(event.params.tokenId.toString());
+  if (!goal) {
+    return;
+  }
+  // Update account of goal author
+  let account = loadOrCreateAccount(goal.authorAddress);
+  account.failedGoals = account.failedGoals + 1;
+  account.save();
 }

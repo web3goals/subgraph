@@ -11,6 +11,65 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
+export class Account extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Account entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Account must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Account", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Account | null {
+    return changetype<Account | null>(store.get("Account", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get achievedGoals(): i32 {
+    let value = this.get("achievedGoals");
+    return value!.toI32();
+  }
+
+  set achievedGoals(value: i32) {
+    this.set("achievedGoals", Value.fromI32(value));
+  }
+
+  get failedGoals(): i32 {
+    let value = this.get("failedGoals");
+    return value!.toI32();
+  }
+
+  set failedGoals(value: i32) {
+    this.set("failedGoals", Value.fromI32(value));
+  }
+
+  get motivatedGoals(): i32 {
+    let value = this.get("motivatedGoals");
+    return value!.toI32();
+  }
+
+  set motivatedGoals(value: i32) {
+    this.set("motivatedGoals", Value.fromI32(value));
+  }
+}
+
 export class Goal extends Entity {
   constructor(id: string) {
     super();

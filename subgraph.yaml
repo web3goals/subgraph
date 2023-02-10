@@ -18,6 +18,8 @@ dataSources:
         - ParamsSet
         - WatcherSet
         - URISet
+        - ClosedAsAchieved
+        - ClosedAsFailed
       abis:
         - name: Goal
           file: ./abis/Goal.json
@@ -30,4 +32,8 @@ dataSources:
           handler: handleWatcherSet
         - event: URISet(indexed uint256,string)
           handler: handleURISet
+        - event: ClosedAsAchieved(indexed uint256)
+          handler: handleClosedAsAchieved
+        - event: ClosedAsFailed(indexed uint256)
+          handler: handleClosedAsFailed
       file: ./src/handlers/goalHandlers.ts
