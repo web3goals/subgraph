@@ -1,4 +1,3 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
   ClosedAsAchieved,
   ClosedAsFailed,
@@ -7,30 +6,21 @@ import {
   URISet,
   WatcherSet,
 } from "../../generated/Goal/Goal";
-import { Goal, GoalWatcher } from "../../generated/schema";
-import { loadOrCreateAccount } from "../utils";
+import { Goal } from "../../generated/schema";
+import {
+  getGoalWithAddedAcceptedGoalWatcherAccountAddress,
+  getGoalWithAddedGoalWatcherAccountAddress,
+  loadOrCreateAccount,
+  loadOrCreateGoal,
+  loadOrCreateGoalWatcher,
+} from "../utils";
 
 /**
  * Handle a tranfer event to create a goal with default values.
  */
 export function handleTransfer(event: Transfer): void {
-  let goal = Goal.load(event.params.tokenId.toString());
-  if (!goal) {
-    goal = new Goal(event.params.tokenId.toString());
-    goal.uri = "";
-    // Defaults for params
-    goal.createdTimestamp = BigInt.zero();
-    goal.authorAddress = Address.zero().toHexString();
-    goal.authorStake = BigInt.zero();
-    goal.deadlineTimestamp = BigInt.zero();
-    goal.isClosed = false;
-    goal.isAchieved = false;
-    // Defaults for watchers
-    goal.watcherAddresses = new Array<string>();
-    goal.watchersNumber = 0;
-    goal.acceptedWatcherAddresses = new Array<string>();
-    goal.save();
-  }
+  let goal = loadOrCreateGoal(event.params.tokenId.toString());
+  goal.save();
 }
 
 /**
@@ -75,20 +65,11 @@ export function handleWatcherSet(event: WatcherSet): void {
   if (!goal) {
     return;
   }
-  // Define goal watcher id
-  let watcherId =
-    goal.id + "_" + event.params.watcherAccountAddress.toHexString();
-  // Load or create goal watcher
-  let watcher = GoalWatcher.load(watcherId);
-  let isWatcherCreated = false;
-  if (!watcher) {
-    watcher = new GoalWatcher(watcherId);
-    watcher.goal = goal.id;
-    watcher.addedTimestamp = BigInt.zero();
-    watcher.accountAddress = Address.zero().toHexString();
-    watcher.isAccepted = false;
-    isWatcherCreated = true;
-  }
+  // Get watcher
+  let watcher = loadOrCreateGoalWatcher(
+    goal.id,
+    event.params.watcherAccountAddress.toHexString()
+  );
   // Define goal watcher is accepted
   let isWatcherAccepted =
     !watcher.isAccepted && event.params.watcher.isAccepted;
@@ -97,18 +78,17 @@ export function handleWatcherSet(event: WatcherSet): void {
   watcher.accountAddress = event.params.watcher.accountAddress.toHexString();
   watcher.isAccepted = event.params.watcher.isAccepted;
   watcher.save();
-  // Add watcher to goal list of watcher addresses
-  if (isWatcherCreated) {
-    let newWatcherAddresses = goal.watcherAddresses;
-    newWatcherAddresses.push(watcher.accountAddress);
-    goal.watcherAddresses = newWatcherAddresses;
-    goal.watchersNumber = goal.watchersNumber + 1;
-  }
-  // Add watcher to goal list of accepted watchers
+  // Add watcher to goal list with watcher addresses
+  goal = getGoalWithAddedGoalWatcherAccountAddress(
+    goal,
+    watcher.accountAddress
+  );
+  // Add watcher to goal list with accepted watcher addresses
   if (isWatcherAccepted) {
-    let newAcceptedWatcherAddresses = goal.acceptedWatcherAddresses;
-    newAcceptedWatcherAddresses.push(watcher.accountAddress);
-    goal.acceptedWatcherAddresses = newAcceptedWatcherAddresses;
+    goal = getGoalWithAddedAcceptedGoalWatcherAccountAddress(
+      goal,
+      watcher.accountAddress
+    );
   }
   goal.save();
 }
