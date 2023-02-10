@@ -131,6 +131,15 @@ export class Goal extends Entity {
   set watchersNumber(value: i32) {
     this.set("watchersNumber", Value.fromI32(value));
   }
+
+  get acceptedWatcherAddresses(): Array<string> {
+    let value = this.get("acceptedWatcherAddresses");
+    return value!.toStringArray();
+  }
+
+  set acceptedWatcherAddresses(value: Array<string>) {
+    this.set("acceptedWatcherAddresses", Value.fromStringArray(value));
+  }
 }
 
 export class GoalWatcher extends Entity {
@@ -189,5 +198,14 @@ export class GoalWatcher extends Entity {
 
   set accountAddress(value: string) {
     this.set("accountAddress", Value.fromString(value));
+  }
+
+  get isAccepted(): boolean {
+    let value = this.get("isAccepted");
+    return value!.toBoolean();
+  }
+
+  set isAccepted(value: boolean) {
+    this.set("isAccepted", Value.fromBoolean(value));
   }
 }

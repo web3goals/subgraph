@@ -12,6 +12,7 @@ type Goal @entity {
   watchers: [GoalWatcher!]! @derivedFrom(field: "goal")
   watcherAddresses: [String!]!
   watchersNumber: Int!
+  acceptedWatcherAddresses: [String!]!
 }
 
 type GoalWatcher @entity {
@@ -19,4 +20,5 @@ type GoalWatcher @entity {
   goal: Goal!
   addedTimestamp: BigInt!
   accountAddress: String!
+  isAccepted: Boolean!
 }

@@ -25,6 +25,7 @@ export function handleTransfer(event: Transfer): void {
     // Defaults for watchers
     goal.watcherAddresses = new Array<string>();
     goal.watchersNumber = 0;
+    goal.acceptedWatcherAddresses = new Array<string>();
     goal.save();
   }
 }
@@ -72,26 +73,39 @@ export function handleWatcherSet(event: WatcherSet): void {
     return;
   }
   // Define goal watcher id
-  let goalWatcherId =
+  let watcherId =
     goal.id + "_" + event.params.watcherAccountAddress.toHexString();
   // Load or create goal watcher
-  let isGoalWatcherCreated = false;
-  let goalWatcher = GoalWatcher.load(goalWatcherId);
-  if (!goalWatcher) {
-    goalWatcher = new GoalWatcher(goalWatcherId);
-    goalWatcher.goal = goal.id;
-    isGoalWatcherCreated = true;
+  let watcher = GoalWatcher.load(watcherId);
+  let isWatcherCreated = false;
+  if (!watcher) {
+    watcher = new GoalWatcher(watcherId);
+    watcher.goal = goal.id;
+    watcher.addedTimestamp = BigInt.zero();
+    watcher.accountAddress = Address.zero().toHexString();
+    watcher.isAccepted = false;
+    isWatcherCreated = true;
   }
+  // Define goal watcher is accepted
+  let isWatcherAccepted =
+    !watcher.isAccepted && event.params.watcher.isAccepted;
   // Update goal watcher
-  goalWatcher.addedTimestamp = event.params.watcher.addedTimestamp;
-  goalWatcher.accountAddress = event.params.watcher.accountAddress.toHexString();
-  goalWatcher.save();
-  // Update goal
-  if (isGoalWatcherCreated) {
-    let newGoalWatcherAddresses = goal.watcherAddresses;
-    newGoalWatcherAddresses.push(goalWatcher.accountAddress);
-    goal.watcherAddresses = newGoalWatcherAddresses;
+  watcher.addedTimestamp = event.params.watcher.addedTimestamp;
+  watcher.accountAddress = event.params.watcher.accountAddress.toHexString();
+  watcher.isAccepted = event.params.watcher.isAccepted;
+  watcher.save();
+  // Add watcher to goal list of watcher addresses
+  if (isWatcherCreated) {
+    let newWatcherAddresses = goal.watcherAddresses;
+    newWatcherAddresses.push(watcher.accountAddress);
+    goal.watcherAddresses = newWatcherAddresses;
     goal.watchersNumber = goal.watchersNumber + 1;
-    goal.save();
   }
+  // Add watcher to goal list of accepted watchers
+  if (isWatcherAccepted) {
+    let newAcceptedWatcherAddresses = goal.acceptedWatcherAddresses;
+    newAcceptedWatcherAddresses.push(watcher.accountAddress);
+    goal.acceptedWatcherAddresses = newAcceptedWatcherAddresses;
+  }
+  goal.save();
 }
