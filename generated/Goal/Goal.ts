@@ -62,6 +62,42 @@ export class ApprovalForAll__Params {
   }
 }
 
+export class ClosedAsAchieved extends ethereum.Event {
+  get params(): ClosedAsAchieved__Params {
+    return new ClosedAsAchieved__Params(this);
+  }
+}
+
+export class ClosedAsAchieved__Params {
+  _event: ClosedAsAchieved;
+
+  constructor(event: ClosedAsAchieved) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+}
+
+export class ClosedAsFailed extends ethereum.Event {
+  get params(): ClosedAsFailed__Params {
+    return new ClosedAsFailed__Params(this);
+  }
+}
+
+export class ClosedAsFailed__Params {
+  _event: ClosedAsFailed;
+
+  constructor(event: ClosedAsFailed) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+}
+
 export class Initialized extends ethereum.Event {
   get params(): Initialized__Params {
     return new Initialized__Params(this);
@@ -149,6 +185,10 @@ export class ParamsSetParamsStruct extends ethereum.Tuple {
 
   get isAchieved(): boolean {
     return this[5].toBoolean();
+  }
+
+  get proofURI(): string {
+    return this[6].toString();
   }
 }
 
@@ -306,6 +346,10 @@ export class Goal__getParamsResultValue0Struct extends ethereum.Tuple {
   get isAchieved(): boolean {
     return this[5].toBoolean();
   }
+
+  get proofURI(): string {
+    return this[6].toString();
+  }
 }
 
 export class Goal__getWatchersResultValue0Struct extends ethereum.Tuple {
@@ -416,7 +460,7 @@ export class Goal extends ethereum.SmartContract {
   getParams(tokenId: BigInt): Goal__getParamsResultValue0Struct {
     let result = super.call(
       "getParams",
-      "getParams(uint256):((uint256,address,uint256,uint256,bool,bool))",
+      "getParams(uint256):((uint256,address,uint256,uint256,bool,bool,string))",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
 
@@ -428,7 +472,7 @@ export class Goal extends ethereum.SmartContract {
   ): ethereum.CallResult<Goal__getParamsResultValue0Struct> {
     let result = super.tryCall(
       "getParams",
-      "getParams(uint256):((uint256,address,uint256,uint256,bool,bool))",
+      "getParams(uint256):((uint256,address,uint256,uint256,bool,bool,string))",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
     if (result.reverted) {
@@ -706,20 +750,54 @@ export class ApproveCall__Outputs {
   }
 }
 
-export class CloseCall extends ethereum.Call {
-  get inputs(): CloseCall__Inputs {
-    return new CloseCall__Inputs(this);
+export class CloseAsAchievedCall extends ethereum.Call {
+  get inputs(): CloseAsAchievedCall__Inputs {
+    return new CloseAsAchievedCall__Inputs(this);
   }
 
-  get outputs(): CloseCall__Outputs {
-    return new CloseCall__Outputs(this);
+  get outputs(): CloseAsAchievedCall__Outputs {
+    return new CloseAsAchievedCall__Outputs(this);
   }
 }
 
-export class CloseCall__Inputs {
-  _call: CloseCall;
+export class CloseAsAchievedCall__Inputs {
+  _call: CloseAsAchievedCall;
 
-  constructor(call: CloseCall) {
+  constructor(call: CloseAsAchievedCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get proofURI(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class CloseAsAchievedCall__Outputs {
+  _call: CloseAsAchievedCall;
+
+  constructor(call: CloseAsAchievedCall) {
+    this._call = call;
+  }
+}
+
+export class CloseAsFailedCall extends ethereum.Call {
+  get inputs(): CloseAsFailedCall__Inputs {
+    return new CloseAsFailedCall__Inputs(this);
+  }
+
+  get outputs(): CloseAsFailedCall__Outputs {
+    return new CloseAsFailedCall__Outputs(this);
+  }
+}
+
+export class CloseAsFailedCall__Inputs {
+  _call: CloseAsFailedCall;
+
+  constructor(call: CloseAsFailedCall) {
     this._call = call;
   }
 
@@ -728,10 +806,10 @@ export class CloseCall__Inputs {
   }
 }
 
-export class CloseCall__Outputs {
-  _call: CloseCall;
+export class CloseAsFailedCall__Outputs {
+  _call: CloseAsFailedCall;
 
-  constructor(call: CloseCall) {
+  constructor(call: CloseAsFailedCall) {
     this._call = call;
   }
 }
