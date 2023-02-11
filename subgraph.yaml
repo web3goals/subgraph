@@ -6,9 +6,9 @@ dataSources:
     name: Goal
     network: mumbai
     source:
-      address: "0xB9EFE9729120D7C94a8c8032ef2606c13d7cf0FF"
+      address: "0xA7397943E64E78fE977d3a3C21F5e45BFb705510"
       abi: Goal
-      startBlock: 31889713
+      startBlock: 31947769
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
