@@ -15,6 +15,7 @@ type Goal @entity {
   deadlineTimestamp: BigInt!
   isClosed: Boolean!
   isAchieved: Boolean!
+  verificationRequirement: String!
   # Watchers
   watchers: [GoalWatcher!]! @derivedFrom(field: "goal")
   watcherAddresses: [String!]!

@@ -164,6 +164,15 @@ export class Goal extends Entity {
     this.set("isAchieved", Value.fromBoolean(value));
   }
 
+  get verificationRequirement(): string {
+    let value = this.get("verificationRequirement");
+    return value!.toString();
+  }
+
+  set verificationRequirement(value: string) {
+    this.set("verificationRequirement", Value.fromString(value));
+  }
+
   get watchers(): Array<string> {
     let value = this.get("watchers");
     return value!.toStringArray();

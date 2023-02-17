@@ -155,14 +155,14 @@ export class ParamsSet__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get params(): ParamsSetParamsStruct {
-    return changetype<ParamsSetParamsStruct>(
+  get param1(): ParamsSetParam1Struct {
+    return changetype<ParamsSetParam1Struct>(
       this._event.parameters[1].value.toTuple()
     );
   }
 }
 
-export class ParamsSetParamsStruct extends ethereum.Tuple {
+export class ParamsSetParam1Struct extends ethereum.Tuple {
   get createdTimestamp(): BigInt {
     return this[0].toBigInt();
   }
@@ -187,7 +187,7 @@ export class ParamsSetParamsStruct extends ethereum.Tuple {
     return this[5].toBoolean();
   }
 
-  get proofURI(): string {
+  get verificationRequirement(): string {
     return this[6].toString();
   }
 }
@@ -347,8 +347,33 @@ export class Goal__getParamsResultValue0Struct extends ethereum.Tuple {
     return this[5].toBoolean();
   }
 
-  get proofURI(): string {
+  get verificationRequirement(): string {
     return this[6].toString();
+  }
+}
+
+export class Goal__getVerificationStatusResult {
+  value0: boolean;
+  value1: boolean;
+
+  constructor(value0: boolean, value1: boolean) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromBoolean(this.value0));
+    map.set("value1", ethereum.Value.fromBoolean(this.value1));
+    return map;
+  }
+
+  getIsAchieved(): boolean {
+    return this.value0;
+  }
+
+  getIsFailed(): boolean {
+    return this.value1;
   }
 }
 
@@ -438,6 +463,52 @@ export class Goal extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  getEpnsChannelAddress(): Address {
+    let result = super.call(
+      "getEpnsChannelAddress",
+      "getEpnsChannelAddress():(address)",
+      []
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_getEpnsChannelAddress(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "getEpnsChannelAddress",
+      "getEpnsChannelAddress():(address)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  getEpnsCommContractAddress(): Address {
+    let result = super.call(
+      "getEpnsCommContractAddress",
+      "getEpnsCommContractAddress():(address)",
+      []
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_getEpnsCommContractAddress(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "getEpnsCommContractAddress",
+      "getEpnsCommContractAddress():(address)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   getHubAddress(): Address {
     let result = super.call("getHubAddress", "getHubAddress():(address)", []);
 
@@ -505,6 +576,71 @@ export class Goal extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  getVerificationData(tokenId: BigInt, key: string): string {
+    let result = super.call(
+      "getVerificationData",
+      "getVerificationData(uint256,string):(string)",
+      [
+        ethereum.Value.fromUnsignedBigInt(tokenId),
+        ethereum.Value.fromString(key)
+      ]
+    );
+
+    return result[0].toString();
+  }
+
+  try_getVerificationData(
+    tokenId: BigInt,
+    key: string
+  ): ethereum.CallResult<string> {
+    let result = super.tryCall(
+      "getVerificationData",
+      "getVerificationData(uint256,string):(string)",
+      [
+        ethereum.Value.fromUnsignedBigInt(tokenId),
+        ethereum.Value.fromString(key)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  getVerificationStatus(tokenId: BigInt): Goal__getVerificationStatusResult {
+    let result = super.call(
+      "getVerificationStatus",
+      "getVerificationStatus(uint256):(bool,bool)",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+
+    return new Goal__getVerificationStatusResult(
+      result[0].toBoolean(),
+      result[1].toBoolean()
+    );
+  }
+
+  try_getVerificationStatus(
+    tokenId: BigInt
+  ): ethereum.CallResult<Goal__getVerificationStatusResult> {
+    let result = super.tryCall(
+      "getVerificationStatus",
+      "getVerificationStatus(uint256):(bool,bool)",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new Goal__getVerificationStatusResult(
+        value[0].toBoolean(),
+        value[1].toBoolean()
+      )
+    );
   }
 
   getWatchers(tokenId: BigInt): Array<Goal__getWatchersResultValue0Struct> {
@@ -716,6 +852,44 @@ export class AcceptWatcherCall__Outputs {
   }
 }
 
+export class AddVerificationDataAndVerifyCall extends ethereum.Call {
+  get inputs(): AddVerificationDataAndVerifyCall__Inputs {
+    return new AddVerificationDataAndVerifyCall__Inputs(this);
+  }
+
+  get outputs(): AddVerificationDataAndVerifyCall__Outputs {
+    return new AddVerificationDataAndVerifyCall__Outputs(this);
+  }
+}
+
+export class AddVerificationDataAndVerifyCall__Inputs {
+  _call: AddVerificationDataAndVerifyCall;
+
+  constructor(call: AddVerificationDataAndVerifyCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get verificationDataKeys(): Array<string> {
+    return this._call.inputValues[1].value.toStringArray();
+  }
+
+  get verificationDataValues(): Array<string> {
+    return this._call.inputValues[2].value.toStringArray();
+  }
+}
+
+export class AddVerificationDataAndVerifyCall__Outputs {
+  _call: AddVerificationDataAndVerifyCall;
+
+  constructor(call: AddVerificationDataAndVerifyCall) {
+    this._call = call;
+  }
+}
+
 export class ApproveCall extends ethereum.Call {
   get inputs(): ApproveCall__Inputs {
     return new ApproveCall__Inputs(this);
@@ -750,54 +924,20 @@ export class ApproveCall__Outputs {
   }
 }
 
-export class CloseAsAchievedCall extends ethereum.Call {
-  get inputs(): CloseAsAchievedCall__Inputs {
-    return new CloseAsAchievedCall__Inputs(this);
+export class CloseCall extends ethereum.Call {
+  get inputs(): CloseCall__Inputs {
+    return new CloseCall__Inputs(this);
   }
 
-  get outputs(): CloseAsAchievedCall__Outputs {
-    return new CloseAsAchievedCall__Outputs(this);
-  }
-}
-
-export class CloseAsAchievedCall__Inputs {
-  _call: CloseAsAchievedCall;
-
-  constructor(call: CloseAsAchievedCall) {
-    this._call = call;
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get proofURI(): string {
-    return this._call.inputValues[1].value.toString();
+  get outputs(): CloseCall__Outputs {
+    return new CloseCall__Outputs(this);
   }
 }
 
-export class CloseAsAchievedCall__Outputs {
-  _call: CloseAsAchievedCall;
+export class CloseCall__Inputs {
+  _call: CloseCall;
 
-  constructor(call: CloseAsAchievedCall) {
-    this._call = call;
-  }
-}
-
-export class CloseAsFailedCall extends ethereum.Call {
-  get inputs(): CloseAsFailedCall__Inputs {
-    return new CloseAsFailedCall__Inputs(this);
-  }
-
-  get outputs(): CloseAsFailedCall__Outputs {
-    return new CloseAsFailedCall__Outputs(this);
-  }
-}
-
-export class CloseAsFailedCall__Inputs {
-  _call: CloseAsFailedCall;
-
-  constructor(call: CloseAsFailedCall) {
+  constructor(call: CloseCall) {
     this._call = call;
   }
 
@@ -806,10 +946,10 @@ export class CloseAsFailedCall__Inputs {
   }
 }
 
-export class CloseAsFailedCall__Outputs {
-  _call: CloseAsFailedCall;
+export class CloseCall__Outputs {
+  _call: CloseCall;
 
-  constructor(call: CloseAsFailedCall) {
+  constructor(call: CloseCall) {
     this._call = call;
   }
 }
@@ -1008,6 +1148,18 @@ export class SetCall__Inputs {
   get deadlineTimestamp(): BigInt {
     return this._call.inputValues[2].value.toBigInt();
   }
+
+  get verificationRequirement(): string {
+    return this._call.inputValues[3].value.toString();
+  }
+
+  get verificationDataKeys(): Array<string> {
+    return this._call.inputValues[4].value.toStringArray();
+  }
+
+  get verificationDataValues(): Array<string> {
+    return this._call.inputValues[5].value.toStringArray();
+  }
 }
 
 export class SetCall__Outputs {
@@ -1052,6 +1204,66 @@ export class SetApprovalForAllCall__Outputs {
   _call: SetApprovalForAllCall;
 
   constructor(call: SetApprovalForAllCall) {
+    this._call = call;
+  }
+}
+
+export class SetEpnsChannelAddressCall extends ethereum.Call {
+  get inputs(): SetEpnsChannelAddressCall__Inputs {
+    return new SetEpnsChannelAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetEpnsChannelAddressCall__Outputs {
+    return new SetEpnsChannelAddressCall__Outputs(this);
+  }
+}
+
+export class SetEpnsChannelAddressCall__Inputs {
+  _call: SetEpnsChannelAddressCall;
+
+  constructor(call: SetEpnsChannelAddressCall) {
+    this._call = call;
+  }
+
+  get epnsChannelAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetEpnsChannelAddressCall__Outputs {
+  _call: SetEpnsChannelAddressCall;
+
+  constructor(call: SetEpnsChannelAddressCall) {
+    this._call = call;
+  }
+}
+
+export class SetEpnsCommContractAddressCall extends ethereum.Call {
+  get inputs(): SetEpnsCommContractAddressCall__Inputs {
+    return new SetEpnsCommContractAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetEpnsCommContractAddressCall__Outputs {
+    return new SetEpnsCommContractAddressCall__Outputs(this);
+  }
+}
+
+export class SetEpnsCommContractAddressCall__Inputs {
+  _call: SetEpnsCommContractAddressCall;
+
+  constructor(call: SetEpnsCommContractAddressCall) {
+    this._call = call;
+  }
+
+  get epnsCommContractAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetEpnsCommContractAddressCall__Outputs {
+  _call: SetEpnsCommContractAddressCall;
+
+  constructor(call: SetEpnsCommContractAddressCall) {
     this._call = call;
   }
 }
@@ -1206,6 +1418,36 @@ export class UppauseCall__Outputs {
   _call: UppauseCall;
 
   constructor(call: UppauseCall) {
+    this._call = call;
+  }
+}
+
+export class VerifyCall extends ethereum.Call {
+  get inputs(): VerifyCall__Inputs {
+    return new VerifyCall__Inputs(this);
+  }
+
+  get outputs(): VerifyCall__Outputs {
+    return new VerifyCall__Outputs(this);
+  }
+}
+
+export class VerifyCall__Inputs {
+  _call: VerifyCall;
+
+  constructor(call: VerifyCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class VerifyCall__Outputs {
+  _call: VerifyCall;
+
+  constructor(call: VerifyCall) {
     this._call = call;
   }
 }

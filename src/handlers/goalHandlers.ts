@@ -47,12 +47,13 @@ export function handleParamsSet(event: ParamsSet): void {
     return;
   }
   // Update goal
-  goal.createdTimestamp = event.params.params.createdTimestamp;
-  goal.authorAddress = event.params.params.authorAddress.toHexString();
-  goal.authorStake = event.params.params.authorStake;
-  goal.deadlineTimestamp = event.params.params.deadlineTimestamp;
-  goal.isClosed = event.params.params.isClosed;
-  goal.isAchieved = event.params.params.isAchieved;
+  goal.createdTimestamp = event.params.param1.createdTimestamp;
+  goal.authorAddress = event.params.param1.authorAddress.toHexString();
+  goal.authorStake = event.params.param1.authorStake;
+  goal.deadlineTimestamp = event.params.param1.deadlineTimestamp;
+  goal.isClosed = event.params.param1.isClosed;
+  goal.isAchieved = event.params.param1.isAchieved;
+  goal.verificationRequirement = event.params.param1.verificationRequirement;
   goal.save();
 }
 

@@ -14,6 +14,7 @@ export function loadOrCreateGoal(tokenId: string): Goal {
     goal.deadlineTimestamp = BigInt.zero();
     goal.isClosed = false;
     goal.isAchieved = false;
+    goal.verificationRequirement = "";
     // Defaults for watchers
     goal.watcherAddresses = new Array<string>();
     goal.watchersNumber = 0;
