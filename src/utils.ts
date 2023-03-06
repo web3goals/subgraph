@@ -9,6 +9,7 @@ export function loadOrCreateGoal(tokenId: string): Goal {
     goal.uri = "";
     // Defaults for params
     goal.createdTimestamp = BigInt.zero();
+    goal.description = "";
     goal.authorAddress = Address.zero().toHexString();
     goal.authorStake = BigInt.zero();
     goal.deadlineTimestamp = BigInt.zero();

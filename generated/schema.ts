@@ -119,6 +119,15 @@ export class Goal extends Entity {
     this.set("createdTimestamp", Value.fromBigInt(value));
   }
 
+  get description(): string {
+    let value = this.get("description");
+    return value!.toString();
+  }
+
+  set description(value: string) {
+    this.set("description", Value.fromString(value));
+  }
+
   get authorAddress(): string {
     let value = this.get("authorAddress");
     return value!.toString();

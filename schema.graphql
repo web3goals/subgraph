@@ -10,6 +10,7 @@ type Goal @entity {
   uri: String!
   # Params
   createdTimestamp: BigInt!
+  description: String!
   authorAddress: String!
   authorStake: BigInt!
   deadlineTimestamp: BigInt!

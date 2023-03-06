@@ -33,6 +33,7 @@ export function handleParamsSet(event: ParamsSet): void {
   }
   // Update goal
   goal.createdTimestamp = event.params.params.createdTimestamp;
+  goal.description = event.params.params.description;
   goal.authorAddress = event.params.params.authorAddress.toHexString();
   goal.authorStake = event.params.params.authorStake;
   goal.deadlineTimestamp = event.params.params.deadlineTimestamp;
