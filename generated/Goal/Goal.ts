@@ -10,6 +10,70 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class AccountReputationSet extends ethereum.Event {
+  get params(): AccountReputationSet__Params {
+    return new AccountReputationSet__Params(this);
+  }
+}
+
+export class AccountReputationSet__Params {
+  _event: AccountReputationSet;
+
+  constructor(event: AccountReputationSet) {
+    this._event = event;
+  }
+
+  get accountAddress(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get accountReputation(): AccountReputationSetAccountReputationStruct {
+    return changetype<AccountReputationSetAccountReputationStruct>(
+      this._event.parameters[1].value.toTuple()
+    );
+  }
+}
+
+export class AccountReputationSetAccountReputationStruct extends ethereum.Tuple {
+  get achievedGoals(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get failedGoals(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get motivatedGoals(): BigInt {
+    return this[2].toBigInt();
+  }
+}
+
+export class AddedVerificationData extends ethereum.Event {
+  get params(): AddedVerificationData__Params {
+    return new AddedVerificationData__Params(this);
+  }
+}
+
+export class AddedVerificationData__Params {
+  _event: AddedVerificationData;
+
+  constructor(event: AddedVerificationData) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get key(): string {
+    return this._event.parameters[1].value.toString();
+  }
+
+  get value(): string {
+    return this._event.parameters[2].value.toString();
+  }
+}
+
 export class Approval extends ethereum.Event {
   get params(): Approval__Params {
     return new Approval__Params(this);
@@ -155,40 +219,44 @@ export class ParamsSet__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get param1(): ParamsSetParam1Struct {
-    return changetype<ParamsSetParam1Struct>(
+  get params(): ParamsSetParamsStruct {
+    return changetype<ParamsSetParamsStruct>(
       this._event.parameters[1].value.toTuple()
     );
   }
 }
 
-export class ParamsSetParam1Struct extends ethereum.Tuple {
+export class ParamsSetParamsStruct extends ethereum.Tuple {
   get createdTimestamp(): BigInt {
     return this[0].toBigInt();
   }
 
+  get description(): string {
+    return this[1].toString();
+  }
+
   get authorAddress(): Address {
-    return this[1].toAddress();
+    return this[2].toAddress();
   }
 
   get authorStake(): BigInt {
-    return this[2].toBigInt();
-  }
-
-  get deadlineTimestamp(): BigInt {
     return this[3].toBigInt();
   }
 
-  get isClosed(): boolean {
-    return this[4].toBoolean();
+  get deadlineTimestamp(): BigInt {
+    return this[4].toBigInt();
   }
 
-  get isAchieved(): boolean {
+  get isClosed(): boolean {
     return this[5].toBoolean();
   }
 
+  get isAchieved(): boolean {
+    return this[6].toBoolean();
+  }
+
   get verificationRequirement(): string {
-    return this[6].toString();
+    return this[7].toString();
   }
 }
 
@@ -207,6 +275,24 @@ export class Paused__Params {
 
   get account(): Address {
     return this._event.parameters[0].value.toAddress();
+  }
+}
+
+export class SentToVerifier extends ethereum.Event {
+  get params(): SentToVerifier__Params {
+    return new SentToVerifier__Params(this);
+  }
+}
+
+export class SentToVerifier__Params {
+  _event: SentToVerifier;
+
+  constructor(event: SentToVerifier) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
   }
 }
 
@@ -233,28 +319,6 @@ export class Transfer__Params {
 
   get tokenId(): BigInt {
     return this._event.parameters[2].value.toBigInt();
-  }
-}
-
-export class URISet extends ethereum.Event {
-  get params(): URISet__Params {
-    return new URISet__Params(this);
-  }
-}
-
-export class URISet__Params {
-  _event: URISet;
-
-  constructor(event: URISet) {
-    this._event = event;
-  }
-
-  get tokenId(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-
-  get tokenURI(): string {
-    return this._event.parameters[1].value.toString();
   }
 }
 
@@ -322,33 +386,51 @@ export class WatcherSetWatcherStruct extends ethereum.Tuple {
   }
 }
 
+export class Goal__getAccountReputationResultValue0Struct extends ethereum.Tuple {
+  get achievedGoals(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get failedGoals(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get motivatedGoals(): BigInt {
+    return this[2].toBigInt();
+  }
+}
+
 export class Goal__getParamsResultValue0Struct extends ethereum.Tuple {
   get createdTimestamp(): BigInt {
     return this[0].toBigInt();
   }
 
+  get description(): string {
+    return this[1].toString();
+  }
+
   get authorAddress(): Address {
-    return this[1].toAddress();
+    return this[2].toAddress();
   }
 
   get authorStake(): BigInt {
-    return this[2].toBigInt();
-  }
-
-  get deadlineTimestamp(): BigInt {
     return this[3].toBigInt();
   }
 
-  get isClosed(): boolean {
-    return this[4].toBoolean();
+  get deadlineTimestamp(): BigInt {
+    return this[4].toBigInt();
   }
 
-  get isAchieved(): boolean {
+  get isClosed(): boolean {
     return this[5].toBoolean();
   }
 
+  get isAchieved(): boolean {
+    return this[6].toBoolean();
+  }
+
   get verificationRequirement(): string {
-    return this[6].toString();
+    return this[7].toString();
   }
 }
 
@@ -419,6 +501,39 @@ export class Goal extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  getAccountReputation(
+    accountAddress: Address
+  ): Goal__getAccountReputationResultValue0Struct {
+    let result = super.call(
+      "getAccountReputation",
+      "getAccountReputation(address):((uint256,uint256,uint256))",
+      [ethereum.Value.fromAddress(accountAddress)]
+    );
+
+    return changetype<Goal__getAccountReputationResultValue0Struct>(
+      result[0].toTuple()
+    );
+  }
+
+  try_getAccountReputation(
+    accountAddress: Address
+  ): ethereum.CallResult<Goal__getAccountReputationResultValue0Struct> {
+    let result = super.tryCall(
+      "getAccountReputation",
+      "getAccountReputation(address):((uint256,uint256,uint256))",
+      [ethereum.Value.fromAddress(accountAddress)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      changetype<Goal__getAccountReputationResultValue0Struct>(
+        value[0].toTuple()
+      )
+    );
+  }
+
   getApproved(tokenId: BigInt): Address {
     let result = super.call("getApproved", "getApproved(uint256):(address)", [
       ethereum.Value.fromUnsignedBigInt(tokenId)
@@ -463,52 +578,6 @@ export class Goal extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  getEpnsChannelAddress(): Address {
-    let result = super.call(
-      "getEpnsChannelAddress",
-      "getEpnsChannelAddress():(address)",
-      []
-    );
-
-    return result[0].toAddress();
-  }
-
-  try_getEpnsChannelAddress(): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "getEpnsChannelAddress",
-      "getEpnsChannelAddress():(address)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  getEpnsCommContractAddress(): Address {
-    let result = super.call(
-      "getEpnsCommContractAddress",
-      "getEpnsCommContractAddress():(address)",
-      []
-    );
-
-    return result[0].toAddress();
-  }
-
-  try_getEpnsCommContractAddress(): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "getEpnsCommContractAddress",
-      "getEpnsCommContractAddress():(address)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
   getHubAddress(): Address {
     let result = super.call("getHubAddress", "getHubAddress():(address)", []);
 
@@ -528,10 +597,25 @@ export class Goal extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  getImageSVG(): string {
+    let result = super.call("getImageSVG", "getImageSVG():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_getImageSVG(): ethereum.CallResult<string> {
+    let result = super.tryCall("getImageSVG", "getImageSVG():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
   getParams(tokenId: BigInt): Goal__getParamsResultValue0Struct {
     let result = super.call(
       "getParams",
-      "getParams(uint256):((uint256,address,uint256,uint256,bool,bool,string))",
+      "getParams(uint256):((uint256,string,address,uint256,uint256,bool,bool,string))",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
 
@@ -543,7 +627,7 @@ export class Goal extends ethereum.SmartContract {
   ): ethereum.CallResult<Goal__getParamsResultValue0Struct> {
     let result = super.tryCall(
       "getParams",
-      "getParams(uint256):((uint256,address,uint256,uint256,bool,bool,string))",
+      "getParams(uint256):((uint256,string,address,uint256,uint256,bool,bool,string))",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
     if (result.reverted) {
@@ -608,6 +692,38 @@ export class Goal extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  getVerificationDataList(tokenId: BigInt, keys: Array<string>): Array<string> {
+    let result = super.call(
+      "getVerificationDataList",
+      "getVerificationDataList(uint256,string[]):(string[])",
+      [
+        ethereum.Value.fromUnsignedBigInt(tokenId),
+        ethereum.Value.fromStringArray(keys)
+      ]
+    );
+
+    return result[0].toStringArray();
+  }
+
+  try_getVerificationDataList(
+    tokenId: BigInt,
+    keys: Array<string>
+  ): ethereum.CallResult<Array<string>> {
+    let result = super.tryCall(
+      "getVerificationDataList",
+      "getVerificationDataList(uint256,string[]):(string[])",
+      [
+        ethereum.Value.fromUnsignedBigInt(tokenId),
+        ethereum.Value.fromStringArray(keys)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toStringArray());
   }
 
   getVerificationStatus(tokenId: BigInt): Goal__getVerificationStatusResult {
@@ -1137,7 +1253,7 @@ export class SetCall__Inputs {
     this._call = call;
   }
 
-  get uri(): string {
+  get description(): string {
     return this._call.inputValues[0].value.toString();
   }
 
@@ -1208,66 +1324,6 @@ export class SetApprovalForAllCall__Outputs {
   }
 }
 
-export class SetEpnsChannelAddressCall extends ethereum.Call {
-  get inputs(): SetEpnsChannelAddressCall__Inputs {
-    return new SetEpnsChannelAddressCall__Inputs(this);
-  }
-
-  get outputs(): SetEpnsChannelAddressCall__Outputs {
-    return new SetEpnsChannelAddressCall__Outputs(this);
-  }
-}
-
-export class SetEpnsChannelAddressCall__Inputs {
-  _call: SetEpnsChannelAddressCall;
-
-  constructor(call: SetEpnsChannelAddressCall) {
-    this._call = call;
-  }
-
-  get epnsChannelAddress(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class SetEpnsChannelAddressCall__Outputs {
-  _call: SetEpnsChannelAddressCall;
-
-  constructor(call: SetEpnsChannelAddressCall) {
-    this._call = call;
-  }
-}
-
-export class SetEpnsCommContractAddressCall extends ethereum.Call {
-  get inputs(): SetEpnsCommContractAddressCall__Inputs {
-    return new SetEpnsCommContractAddressCall__Inputs(this);
-  }
-
-  get outputs(): SetEpnsCommContractAddressCall__Outputs {
-    return new SetEpnsCommContractAddressCall__Outputs(this);
-  }
-}
-
-export class SetEpnsCommContractAddressCall__Inputs {
-  _call: SetEpnsCommContractAddressCall;
-
-  constructor(call: SetEpnsCommContractAddressCall) {
-    this._call = call;
-  }
-
-  get epnsCommContractAddress(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class SetEpnsCommContractAddressCall__Outputs {
-  _call: SetEpnsCommContractAddressCall;
-
-  constructor(call: SetEpnsCommContractAddressCall) {
-    this._call = call;
-  }
-}
-
 export class SetHubAddressCall extends ethereum.Call {
   get inputs(): SetHubAddressCall__Inputs {
     return new SetHubAddressCall__Inputs(this);
@@ -1294,6 +1350,36 @@ export class SetHubAddressCall__Outputs {
   _call: SetHubAddressCall;
 
   constructor(call: SetHubAddressCall) {
+    this._call = call;
+  }
+}
+
+export class SetImageSVGCall extends ethereum.Call {
+  get inputs(): SetImageSVGCall__Inputs {
+    return new SetImageSVGCall__Inputs(this);
+  }
+
+  get outputs(): SetImageSVGCall__Outputs {
+    return new SetImageSVGCall__Outputs(this);
+  }
+}
+
+export class SetImageSVGCall__Inputs {
+  _call: SetImageSVGCall;
+
+  constructor(call: SetImageSVGCall) {
+    this._call = call;
+  }
+
+  get imageSVG(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+}
+
+export class SetImageSVGCall__Outputs {
+  _call: SetImageSVGCall;
+
+  constructor(call: SetImageSVGCall) {
     this._call = call;
   }
 }
@@ -1396,28 +1482,28 @@ export class TransferOwnershipCall__Outputs {
   }
 }
 
-export class UppauseCall extends ethereum.Call {
-  get inputs(): UppauseCall__Inputs {
-    return new UppauseCall__Inputs(this);
+export class UnpauseCall extends ethereum.Call {
+  get inputs(): UnpauseCall__Inputs {
+    return new UnpauseCall__Inputs(this);
   }
 
-  get outputs(): UppauseCall__Outputs {
-    return new UppauseCall__Outputs(this);
+  get outputs(): UnpauseCall__Outputs {
+    return new UnpauseCall__Outputs(this);
   }
 }
 
-export class UppauseCall__Inputs {
-  _call: UppauseCall;
+export class UnpauseCall__Inputs {
+  _call: UnpauseCall;
 
-  constructor(call: UppauseCall) {
+  constructor(call: UnpauseCall) {
     this._call = call;
   }
 }
 
-export class UppauseCall__Outputs {
-  _call: UppauseCall;
+export class UnpauseCall__Outputs {
+  _call: UnpauseCall;
 
-  constructor(call: UppauseCall) {
+  constructor(call: UnpauseCall) {
     this._call = call;
   }
 }
