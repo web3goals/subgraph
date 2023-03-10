@@ -46,6 +46,10 @@ export class AccountReputationSetAccountReputationStruct extends ethereum.Tuple 
   get motivatedGoals(): BigInt {
     return this[2].toBigInt();
   }
+
+  get notMotivatedGoals(): BigInt {
+    return this[3].toBigInt();
+  }
 }
 
 export class AddedVerificationData extends ethereum.Event {
@@ -177,6 +181,52 @@ export class Initialized__Params {
 
   get version(): i32 {
     return this._event.parameters[0].value.toI32();
+  }
+}
+
+export class MotivatorSet extends ethereum.Event {
+  get params(): MotivatorSet__Params {
+    return new MotivatorSet__Params(this);
+  }
+}
+
+export class MotivatorSet__Params {
+  _event: MotivatorSet;
+
+  constructor(event: MotivatorSet) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get motivatorAccountAddress(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
+  get motivator(): MotivatorSetMotivatorStruct {
+    return changetype<MotivatorSetMotivatorStruct>(
+      this._event.parameters[2].value.toTuple()
+    );
+  }
+}
+
+export class MotivatorSetMotivatorStruct extends ethereum.Tuple {
+  get addedTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get accountAddress(): Address {
+    return this[1].toAddress();
+  }
+
+  get isAccepted(): boolean {
+    return this[2].toBoolean();
+  }
+
+  get extraDataURI(): string {
+    return this[3].toString();
   }
 }
 
@@ -340,35 +390,25 @@ export class Unpaused__Params {
   }
 }
 
-export class WatcherSet extends ethereum.Event {
-  get params(): WatcherSet__Params {
-    return new WatcherSet__Params(this);
+export class Goal__getAccountReputationResultValue0Struct extends ethereum.Tuple {
+  get achievedGoals(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get failedGoals(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get motivatedGoals(): BigInt {
+    return this[2].toBigInt();
+  }
+
+  get notMotivatedGoals(): BigInt {
+    return this[3].toBigInt();
   }
 }
 
-export class WatcherSet__Params {
-  _event: WatcherSet;
-
-  constructor(event: WatcherSet) {
-    this._event = event;
-  }
-
-  get tokenId(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-
-  get watcherAccountAddress(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
-  get watcher(): WatcherSetWatcherStruct {
-    return changetype<WatcherSetWatcherStruct>(
-      this._event.parameters[2].value.toTuple()
-    );
-  }
-}
-
-export class WatcherSetWatcherStruct extends ethereum.Tuple {
+export class Goal__getMotivatorsResultValue0Struct extends ethereum.Tuple {
   get addedTimestamp(): BigInt {
     return this[0].toBigInt();
   }
@@ -383,20 +423,6 @@ export class WatcherSetWatcherStruct extends ethereum.Tuple {
 
   get extraDataURI(): string {
     return this[3].toString();
-  }
-}
-
-export class Goal__getAccountReputationResultValue0Struct extends ethereum.Tuple {
-  get achievedGoals(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get failedGoals(): BigInt {
-    return this[1].toBigInt();
-  }
-
-  get motivatedGoals(): BigInt {
-    return this[2].toBigInt();
   }
 }
 
@@ -459,24 +485,6 @@ export class Goal__getVerificationStatusResult {
   }
 }
 
-export class Goal__getWatchersResultValue0Struct extends ethereum.Tuple {
-  get addedTimestamp(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get accountAddress(): Address {
-    return this[1].toAddress();
-  }
-
-  get isAccepted(): boolean {
-    return this[2].toBoolean();
-  }
-
-  get extraDataURI(): string {
-    return this[3].toString();
-  }
-}
-
 export class Goal extends ethereum.SmartContract {
   static bind(address: Address): Goal {
     return new Goal("Goal", address);
@@ -506,7 +514,7 @@ export class Goal extends ethereum.SmartContract {
   ): Goal__getAccountReputationResultValue0Struct {
     let result = super.call(
       "getAccountReputation",
-      "getAccountReputation(address):((uint256,uint256,uint256))",
+      "getAccountReputation(address):((uint256,uint256,uint256,uint256))",
       [ethereum.Value.fromAddress(accountAddress)]
     );
 
@@ -520,7 +528,7 @@ export class Goal extends ethereum.SmartContract {
   ): ethereum.CallResult<Goal__getAccountReputationResultValue0Struct> {
     let result = super.tryCall(
       "getAccountReputation",
-      "getAccountReputation(address):((uint256,uint256,uint256))",
+      "getAccountReputation(address):((uint256,uint256,uint256,uint256))",
       [ethereum.Value.fromAddress(accountAddress)]
     );
     if (result.reverted) {
@@ -610,6 +618,33 @@ export class Goal extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  getMotivators(tokenId: BigInt): Array<Goal__getMotivatorsResultValue0Struct> {
+    let result = super.call(
+      "getMotivators",
+      "getMotivators(uint256):((uint256,address,bool,string)[])",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+
+    return result[0].toTupleArray<Goal__getMotivatorsResultValue0Struct>();
+  }
+
+  try_getMotivators(
+    tokenId: BigInt
+  ): ethereum.CallResult<Array<Goal__getMotivatorsResultValue0Struct>> {
+    let result = super.tryCall(
+      "getMotivators",
+      "getMotivators(uint256):((uint256,address,bool,string)[])",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTupleArray<Goal__getMotivatorsResultValue0Struct>()
+    );
   }
 
   getParams(tokenId: BigInt): Goal__getParamsResultValue0Struct {
@@ -756,33 +791,6 @@ export class Goal extends ethereum.SmartContract {
         value[0].toBoolean(),
         value[1].toBoolean()
       )
-    );
-  }
-
-  getWatchers(tokenId: BigInt): Array<Goal__getWatchersResultValue0Struct> {
-    let result = super.call(
-      "getWatchers",
-      "getWatchers(uint256):((uint256,address,bool,string)[])",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)]
-    );
-
-    return result[0].toTupleArray<Goal__getWatchersResultValue0Struct>();
-  }
-
-  try_getWatchers(
-    tokenId: BigInt
-  ): ethereum.CallResult<Array<Goal__getWatchersResultValue0Struct>> {
-    let result = super.tryCall(
-      "getWatchers",
-      "getWatchers(uint256):((uint256,address,bool,string)[])",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      value[0].toTupleArray<Goal__getWatchersResultValue0Struct>()
     );
   }
 
@@ -934,20 +942,20 @@ export class Goal extends ethereum.SmartContract {
   }
 }
 
-export class AcceptWatcherCall extends ethereum.Call {
-  get inputs(): AcceptWatcherCall__Inputs {
-    return new AcceptWatcherCall__Inputs(this);
+export class AcceptMotivatorCall extends ethereum.Call {
+  get inputs(): AcceptMotivatorCall__Inputs {
+    return new AcceptMotivatorCall__Inputs(this);
   }
 
-  get outputs(): AcceptWatcherCall__Outputs {
-    return new AcceptWatcherCall__Outputs(this);
+  get outputs(): AcceptMotivatorCall__Outputs {
+    return new AcceptMotivatorCall__Outputs(this);
   }
 }
 
-export class AcceptWatcherCall__Inputs {
-  _call: AcceptWatcherCall;
+export class AcceptMotivatorCall__Inputs {
+  _call: AcceptMotivatorCall;
 
-  constructor(call: AcceptWatcherCall) {
+  constructor(call: AcceptMotivatorCall) {
     this._call = call;
   }
 
@@ -955,15 +963,53 @@ export class AcceptWatcherCall__Inputs {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get watcherAddress(): Address {
+  get motivatorAddress(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
 }
 
-export class AcceptWatcherCall__Outputs {
-  _call: AcceptWatcherCall;
+export class AcceptMotivatorCall__Outputs {
+  _call: AcceptMotivatorCall;
 
-  constructor(call: AcceptWatcherCall) {
+  constructor(call: AcceptMotivatorCall) {
+    this._call = call;
+  }
+}
+
+export class AddVerificationDataCall extends ethereum.Call {
+  get inputs(): AddVerificationDataCall__Inputs {
+    return new AddVerificationDataCall__Inputs(this);
+  }
+
+  get outputs(): AddVerificationDataCall__Outputs {
+    return new AddVerificationDataCall__Outputs(this);
+  }
+}
+
+export class AddVerificationDataCall__Inputs {
+  _call: AddVerificationDataCall;
+
+  constructor(call: AddVerificationDataCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get verificationDataKeys(): Array<string> {
+    return this._call.inputValues[1].value.toStringArray();
+  }
+
+  get verificationDataValues(): Array<string> {
+    return this._call.inputValues[2].value.toStringArray();
+  }
+}
+
+export class AddVerificationDataCall__Outputs {
+  _call: AddVerificationDataCall;
+
+  constructor(call: AddVerificationDataCall) {
     this._call = call;
   }
 }
@@ -1036,6 +1082,40 @@ export class ApproveCall__Outputs {
   _call: ApproveCall;
 
   constructor(call: ApproveCall) {
+    this._call = call;
+  }
+}
+
+export class BecomeMotivatorCall extends ethereum.Call {
+  get inputs(): BecomeMotivatorCall__Inputs {
+    return new BecomeMotivatorCall__Inputs(this);
+  }
+
+  get outputs(): BecomeMotivatorCall__Outputs {
+    return new BecomeMotivatorCall__Outputs(this);
+  }
+}
+
+export class BecomeMotivatorCall__Inputs {
+  _call: BecomeMotivatorCall;
+
+  constructor(call: BecomeMotivatorCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get extraDataURI(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class BecomeMotivatorCall__Outputs {
+  _call: BecomeMotivatorCall;
+
+  constructor(call: BecomeMotivatorCall) {
     this._call = call;
   }
 }
@@ -1534,40 +1614,6 @@ export class VerifyCall__Outputs {
   _call: VerifyCall;
 
   constructor(call: VerifyCall) {
-    this._call = call;
-  }
-}
-
-export class WatchCall extends ethereum.Call {
-  get inputs(): WatchCall__Inputs {
-    return new WatchCall__Inputs(this);
-  }
-
-  get outputs(): WatchCall__Outputs {
-    return new WatchCall__Outputs(this);
-  }
-}
-
-export class WatchCall__Inputs {
-  _call: WatchCall;
-
-  constructor(call: WatchCall) {
-    this._call = call;
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get extraDataURI(): string {
-    return this._call.inputValues[1].value.toString();
-  }
-}
-
-export class WatchCall__Outputs {
-  _call: WatchCall;
-
-  constructor(call: WatchCall) {
     this._call = call;
   }
 }

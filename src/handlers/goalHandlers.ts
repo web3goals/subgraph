@@ -3,15 +3,15 @@ import {
   ClosedAsFailed,
   ParamsSet,
   Transfer,
-  WatcherSet,
+  MotivatorSet,
 } from "../../generated/Goal/Goal";
 import { Goal } from "../../generated/schema";
 import {
-  getGoalWithAddedAcceptedGoalWatcherAccountAddress,
-  getGoalWithAddedGoalWatcherAccountAddress,
+  getGoalWithAddedAcceptedGoalMotivatorAccountAddress,
+  getGoalWithAddedGoalMotivatorAccountAddress,
   loadOrCreateAccount,
   loadOrCreateGoal,
-  loadOrCreateGoalWatcher,
+  loadOrCreateGoalMotivator,
 } from "../utils";
 
 /**
@@ -44,37 +44,37 @@ export function handleParamsSet(event: ParamsSet): void {
 }
 
 /**
- * Handle a watcher set event to add or update a goal watchers.
+ * Handle a motivator set event to add or update a goal motivators.
  */
-export function handleWatcherSet(event: WatcherSet): void {
+export function handleMotivatorSet(event: MotivatorSet): void {
   // Load goal
   let goal = Goal.load(event.params.tokenId.toString());
   if (!goal) {
     return;
   }
-  // Get watcher
-  let watcher = loadOrCreateGoalWatcher(
+  // Get motivator
+  let motivator = loadOrCreateGoalMotivator(
     goal.id,
-    event.params.watcherAccountAddress.toHexString()
+    event.params.motivatorAccountAddress.toHexString()
   );
-  // Define goal watcher is accepted
-  let isWatcherAccepted =
-    !watcher.isAccepted && event.params.watcher.isAccepted;
-  // Update goal watcher
-  watcher.addedTimestamp = event.params.watcher.addedTimestamp;
-  watcher.accountAddress = event.params.watcher.accountAddress.toHexString();
-  watcher.isAccepted = event.params.watcher.isAccepted;
-  watcher.save();
-  // Add watcher to goal list with watcher addresses
-  goal = getGoalWithAddedGoalWatcherAccountAddress(
+  // Define goal motivator is accepted
+  let isMotivatorAccepted =
+    !motivator.isAccepted && event.params.motivator.isAccepted;
+  // Update goal motivator
+  motivator.addedTimestamp = event.params.motivator.addedTimestamp;
+  motivator.accountAddress = event.params.motivator.accountAddress.toHexString();
+  motivator.isAccepted = event.params.motivator.isAccepted;
+  motivator.save();
+  // Add motivator to goal list with motivator addresses
+  goal = getGoalWithAddedGoalMotivatorAccountAddress(
     goal,
-    watcher.accountAddress
+    motivator.accountAddress
   );
-  // Add watcher to goal list with accepted watcher addresses
-  if (isWatcherAccepted) {
-    goal = getGoalWithAddedAcceptedGoalWatcherAccountAddress(
+  // Add motivator to goal list with accepted motivator addresses
+  if (isMotivatorAccepted) {
+    goal = getGoalWithAddedAcceptedGoalMotivatorAccountAddress(
       goal,
-      watcher.accountAddress
+      motivator.accountAddress
     );
   }
   goal.save();
@@ -93,12 +93,12 @@ export function handleClosedAsAchieved(event: ClosedAsAchieved): void {
   let account = loadOrCreateAccount(goal.authorAddress);
   account.achievedGoals = account.achievedGoals + 1;
   account.save();
-  // Update accounts of goal accepted watchers
-  for (let i = 0; i < goal.acceptedWatcherAddresses.length; i++) {
-    let watcherAddress = goal.acceptedWatcherAddresses[i];
-    let watcherAccount = loadOrCreateAccount(watcherAddress);
-    watcherAccount.motivatedGoals = watcherAccount.motivatedGoals + 1;
-    watcherAccount.save();
+  // Update accounts of goal accepted motivators
+  for (let i = 0; i < goal.acceptedMotivatorAddresses.length; i++) {
+    let motivatorAddress = goal.acceptedMotivatorAddresses[i];
+    let motivatorAccount = loadOrCreateAccount(motivatorAddress);
+    motivatorAccount.motivatedGoals = motivatorAccount.motivatedGoals + 1;
+    motivatorAccount.save();
   }
 }
 

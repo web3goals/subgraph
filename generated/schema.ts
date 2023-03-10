@@ -182,44 +182,44 @@ export class Goal extends Entity {
     this.set("verificationRequirement", Value.fromString(value));
   }
 
-  get watchers(): Array<string> {
-    let value = this.get("watchers");
+  get motivators(): Array<string> {
+    let value = this.get("motivators");
     return value!.toStringArray();
   }
 
-  set watchers(value: Array<string>) {
-    this.set("watchers", Value.fromStringArray(value));
+  set motivators(value: Array<string>) {
+    this.set("motivators", Value.fromStringArray(value));
   }
 
-  get watcherAddresses(): Array<string> {
-    let value = this.get("watcherAddresses");
+  get motivatorAddresses(): Array<string> {
+    let value = this.get("motivatorAddresses");
     return value!.toStringArray();
   }
 
-  set watcherAddresses(value: Array<string>) {
-    this.set("watcherAddresses", Value.fromStringArray(value));
+  set motivatorAddresses(value: Array<string>) {
+    this.set("motivatorAddresses", Value.fromStringArray(value));
   }
 
-  get watchersNumber(): i32 {
-    let value = this.get("watchersNumber");
+  get motivatorsNumber(): i32 {
+    let value = this.get("motivatorsNumber");
     return value!.toI32();
   }
 
-  set watchersNumber(value: i32) {
-    this.set("watchersNumber", Value.fromI32(value));
+  set motivatorsNumber(value: i32) {
+    this.set("motivatorsNumber", Value.fromI32(value));
   }
 
-  get acceptedWatcherAddresses(): Array<string> {
-    let value = this.get("acceptedWatcherAddresses");
+  get acceptedMotivatorAddresses(): Array<string> {
+    let value = this.get("acceptedMotivatorAddresses");
     return value!.toStringArray();
   }
 
-  set acceptedWatcherAddresses(value: Array<string>) {
-    this.set("acceptedWatcherAddresses", Value.fromStringArray(value));
+  set acceptedMotivatorAddresses(value: Array<string>) {
+    this.set("acceptedMotivatorAddresses", Value.fromStringArray(value));
   }
 }
 
-export class GoalWatcher extends Entity {
+export class GoalMotivator extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -227,18 +227,18 @@ export class GoalWatcher extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save GoalWatcher entity without an ID");
+    assert(id != null, "Cannot save GoalMotivator entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type GoalWatcher must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type GoalMotivator must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("GoalWatcher", id.toString(), this);
+      store.set("GoalMotivator", id.toString(), this);
     }
   }
 
-  static load(id: string): GoalWatcher | null {
-    return changetype<GoalWatcher | null>(store.get("GoalWatcher", id));
+  static load(id: string): GoalMotivator | null {
+    return changetype<GoalMotivator | null>(store.get("GoalMotivator", id));
   }
 
   get id(): string {

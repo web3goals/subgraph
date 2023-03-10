@@ -6,9 +6,9 @@ dataSources:
     name: Goal
     network: mumbai
     source:
-      address: "0x93B2c230b3c7521201b9c50283d48E6764e83630"
+      address: "0x8b2a8Ce8acA1Fd35De6Fd1F5ea49C1e65DA56f81"
       abi: Goal
-      startBlock: 32855450
+      startBlock: 32945095
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -16,7 +16,7 @@ dataSources:
       entities:
         - Transfer
         - ParamsSet
-        - WatcherSet
+        - MotivatorSet
         - URISet
         - ClosedAsAchieved
         - ClosedAsFailed
@@ -28,8 +28,8 @@ dataSources:
           handler: handleTransfer
         - event: ParamsSet(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
           handler: handleParamsSet
-        - event: WatcherSet(indexed uint256,indexed address,(uint256,address,bool,string))
-          handler: handleWatcherSet
+        - event: MotivatorSet(indexed uint256,indexed address,(uint256,address,bool,string))
+          handler: handleMotivatorSet
         - event: ClosedAsAchieved(indexed uint256)
           handler: handleClosedAsAchieved
         - event: ClosedAsFailed(indexed uint256)

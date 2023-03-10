@@ -17,14 +17,14 @@ type Goal @entity {
   isClosed: Boolean!
   isAchieved: Boolean!
   verificationRequirement: String!
-  # Watchers
-  watchers: [GoalWatcher!]! @derivedFrom(field: "goal")
-  watcherAddresses: [String!]!
-  watchersNumber: Int!
-  acceptedWatcherAddresses: [String!]!
+  # Motivators
+  motivators: [GoalMotivator!]! @derivedFrom(field: "goal")
+  motivatorAddresses: [String!]!
+  motivatorsNumber: Int!
+  acceptedMotivatorAddresses: [String!]!
 }
 
-type GoalWatcher @entity {
+type GoalMotivator @entity {
   id: ID! # combination of goal id and account address
   goal: Goal!
   addedTimestamp: BigInt!

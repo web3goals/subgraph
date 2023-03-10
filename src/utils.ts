@@ -1,5 +1,5 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
-import { Account, Goal, GoalWatcher } from "../generated/schema";
+import { Account, Goal, GoalMotivator } from "../generated/schema";
 
 export function loadOrCreateGoal(tokenId: string): Goal {
   let goalId = tokenId;
@@ -16,28 +16,28 @@ export function loadOrCreateGoal(tokenId: string): Goal {
     goal.isClosed = false;
     goal.isAchieved = false;
     goal.verificationRequirement = "";
-    // Defaults for watchers
-    goal.watcherAddresses = new Array<string>();
-    goal.watchersNumber = 0;
-    goal.acceptedWatcherAddresses = new Array<string>();
+    // Defaults for motivators
+    goal.motivatorAddresses = new Array<string>();
+    goal.motivatorsNumber = 0;
+    goal.acceptedMotivatorAddresses = new Array<string>();
   }
   return goal;
 }
 
-export function loadOrCreateGoalWatcher(
+export function loadOrCreateGoalMotivator(
   goalId: string,
-  goalWatcherAccountAddress: string
-): GoalWatcher {
-  let watcherId = goalId + "_" + goalWatcherAccountAddress;
-  let watcher = GoalWatcher.load(watcherId);
-  if (!watcher) {
-    watcher = new GoalWatcher(watcherId);
-    watcher.goal = goalId;
-    watcher.addedTimestamp = BigInt.zero();
-    watcher.accountAddress = Address.zero().toHexString();
-    watcher.isAccepted = false;
+  goalMotivatorAccountAddress: string
+): GoalMotivator {
+  let motivatorId = goalId + "_" + goalMotivatorAccountAddress;
+  let motivator = GoalMotivator.load(motivatorId);
+  if (!motivator) {
+    motivator = new GoalMotivator(motivatorId);
+    motivator.goal = goalId;
+    motivator.addedTimestamp = BigInt.zero();
+    motivator.accountAddress = Address.zero().toHexString();
+    motivator.isAccepted = false;
   }
-  return watcher;
+  return motivator;
 }
 
 export function loadOrCreateAccount(accountAddress: string): Account {
@@ -52,39 +52,39 @@ export function loadOrCreateAccount(accountAddress: string): Account {
   return account;
 }
 
-export function getGoalWithAddedGoalWatcherAccountAddress(
+export function getGoalWithAddedGoalMotivatorAccountAddress(
   goal: Goal,
-  goalWatcherAccountAddress: string
+  goalMotivatorAccountAddress: string
 ): Goal {
-  // Check existing watcher addresses
-  for (let i = 0; i < goal.watcherAddresses.length; i++) {
-    let watcherAddress = goal.watcherAddresses[i];
-    if (watcherAddress == goalWatcherAccountAddress) {
+  // Check existing motivator addresses
+  for (let i = 0; i < goal.motivatorAddresses.length; i++) {
+    let motivatorAddress = goal.motivatorAddresses[i];
+    if (motivatorAddress == goalMotivatorAccountAddress) {
       return goal;
     }
   }
-  // Add watcher address
-  let newWatcherAddresses = goal.watcherAddresses;
-  newWatcherAddresses.push(goalWatcherAccountAddress);
-  goal.watcherAddresses = newWatcherAddresses;
-  goal.watchersNumber = goal.watchersNumber + 1;
+  // Add motivator address
+  let newMotivatorAddresses = goal.motivatorAddresses;
+  newMotivatorAddresses.push(goalMotivatorAccountAddress);
+  goal.motivatorAddresses = newMotivatorAddresses;
+  goal.motivatorsNumber = goal.motivatorsNumber + 1;
   return goal;
 }
 
-export function getGoalWithAddedAcceptedGoalWatcherAccountAddress(
+export function getGoalWithAddedAcceptedGoalMotivatorAccountAddress(
   goal: Goal,
-  goalWatcherAccountAddress: string
+  goalMotivatorAccountAddress: string
 ): Goal {
-  // Check existing watcher addresses
-  for (let i = 0; i < goal.acceptedWatcherAddresses.length; i++) {
-    let watcherAddress = goal.acceptedWatcherAddresses[i];
-    if (watcherAddress == goalWatcherAccountAddress) {
+  // Check existing motivator addresses
+  for (let i = 0; i < goal.acceptedMotivatorAddresses.length; i++) {
+    let motivatorAddress = goal.acceptedMotivatorAddresses[i];
+    if (motivatorAddress == goalMotivatorAccountAddress) {
       return goal;
     }
   }
-  // Add watcher address
-  let newAcceptedWatcherAddresses = goal.acceptedWatcherAddresses;
-  newAcceptedWatcherAddresses.push(goalWatcherAccountAddress);
-  goal.acceptedWatcherAddresses = newAcceptedWatcherAddresses;
+  // Add motivator address
+  let newAcceptedmotivatorAddresses = goal.acceptedMotivatorAddresses;
+  newAcceptedmotivatorAddresses.push(goalMotivatorAccountAddress);
+  goal.acceptedMotivatorAddresses = newAcceptedmotivatorAddresses;
   return goal;
 }
