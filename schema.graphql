@@ -7,7 +7,6 @@ type Account @entity {
 
 type Goal @entity {
   id: ID! # token id
-  uri: String!
   # Params
   createdTimestamp: BigInt!
   description: String!

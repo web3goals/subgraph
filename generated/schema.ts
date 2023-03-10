@@ -101,15 +101,6 @@ export class Goal extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get uri(): string {
-    let value = this.get("uri");
-    return value!.toString();
-  }
-
-  set uri(value: string) {
-    this.set("uri", Value.fromString(value));
-  }
-
   get createdTimestamp(): BigInt {
     let value = this.get("createdTimestamp");
     return value!.toBigInt();

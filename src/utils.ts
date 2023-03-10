@@ -6,7 +6,6 @@ export function loadOrCreateGoal(tokenId: string): Goal {
   let goal = Goal.load(goalId);
   if (!goal) {
     goal = new Goal(goalId);
-    goal.uri = "";
     // Defaults for params
     goal.createdTimestamp = BigInt.zero();
     goal.description = "";
