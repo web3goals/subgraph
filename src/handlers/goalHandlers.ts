@@ -1,9 +1,8 @@
 import {
-  ClosedAsAchieved,
-  ClosedAsFailed,
+  AccountReputationSet,
+  MotivatorSet,
   ParamsSet,
   Transfer,
-  MotivatorSet,
 } from "../../generated/Goal/Goal";
 import { Goal } from "../../generated/schema";
 import {
@@ -81,38 +80,13 @@ export function handleMotivatorSet(event: MotivatorSet): void {
 }
 
 /**
- * Handle a closed as achieved event to update accounts.
+ * Handle a account reputation set event to update account reputation.
  */
-export function handleClosedAsAchieved(event: ClosedAsAchieved): void {
-  // Load goal
-  let goal = Goal.load(event.params.tokenId.toString());
-  if (!goal) {
-    return;
-  }
-  // Update account of goal author
-  let account = loadOrCreateAccount(goal.authorAddress);
-  account.achievedGoals = account.achievedGoals + 1;
-  account.save();
-  // Update accounts of goal accepted motivators
-  for (let i = 0; i < goal.acceptedMotivatorAddresses.length; i++) {
-    let motivatorAddress = goal.acceptedMotivatorAddresses[i];
-    let motivatorAccount = loadOrCreateAccount(motivatorAddress);
-    motivatorAccount.motivatedGoals = motivatorAccount.motivatedGoals + 1;
-    motivatorAccount.save();
-  }
-}
-
-/**
- * Handle a closed as failed event to update accounts.
- */
-export function handleClosedAsFailed(event: ClosedAsFailed): void {
-  // Load goal
-  let goal = Goal.load(event.params.tokenId.toString());
-  if (!goal) {
-    return;
-  }
-  // Update account of goal author
-  let account = loadOrCreateAccount(goal.authorAddress);
-  account.failedGoals = account.failedGoals + 1;
+export function handleAccountReputationSet(event: AccountReputationSet): void {
+  let account = loadOrCreateAccount(event.params.accountAddress.toHexString());
+  account.achievedGoals = event.params.accountReputation.achievedGoals;
+  account.failedGoals = event.params.accountReputation.failedGoals;
+  account.motivatedGoals = event.params.accountReputation.motivatedGoals;
+  account.notMotivatedGoals = event.params.accountReputation.notMotivatedGoals;
   account.save();
 }

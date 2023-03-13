@@ -17,9 +17,8 @@ dataSources:
         - Transfer
         - ParamsSet
         - MotivatorSet
+        - AccountReputationSet
         - URISet
-        - ClosedAsAchieved
-        - ClosedAsFailed
       abis:
         - name: Goal
           file: ./abis/Goal.json
@@ -30,8 +29,6 @@ dataSources:
           handler: handleParamsSet
         - event: MotivatorSet(indexed uint256,indexed address,(uint256,address,bool,string))
           handler: handleMotivatorSet
-        - event: ClosedAsAchieved(indexed uint256)
-          handler: handleClosedAsAchieved
-        - event: ClosedAsFailed(indexed uint256)
-          handler: handleClosedAsFailed
+        - event: AccountReputationSet(indexed address,(uint256,uint256,uint256,uint256))
+          handler: handleAccountReputationSet
       file: ./src/handlers/goalHandlers.ts

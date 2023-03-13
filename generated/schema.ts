@@ -42,31 +42,40 @@ export class Account extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get achievedGoals(): i32 {
+  get achievedGoals(): BigInt {
     let value = this.get("achievedGoals");
-    return value!.toI32();
+    return value!.toBigInt();
   }
 
-  set achievedGoals(value: i32) {
-    this.set("achievedGoals", Value.fromI32(value));
+  set achievedGoals(value: BigInt) {
+    this.set("achievedGoals", Value.fromBigInt(value));
   }
 
-  get failedGoals(): i32 {
+  get failedGoals(): BigInt {
     let value = this.get("failedGoals");
-    return value!.toI32();
+    return value!.toBigInt();
   }
 
-  set failedGoals(value: i32) {
-    this.set("failedGoals", Value.fromI32(value));
+  set failedGoals(value: BigInt) {
+    this.set("failedGoals", Value.fromBigInt(value));
   }
 
-  get motivatedGoals(): i32 {
+  get motivatedGoals(): BigInt {
     let value = this.get("motivatedGoals");
-    return value!.toI32();
+    return value!.toBigInt();
   }
 
-  set motivatedGoals(value: i32) {
-    this.set("motivatedGoals", Value.fromI32(value));
+  set motivatedGoals(value: BigInt) {
+    this.set("motivatedGoals", Value.fromBigInt(value));
+  }
+
+  get notMotivatedGoals(): BigInt {
+    let value = this.get("notMotivatedGoals");
+    return value!.toBigInt();
+  }
+
+  set notMotivatedGoals(value: BigInt) {
+    this.set("notMotivatedGoals", Value.fromBigInt(value));
   }
 }
 

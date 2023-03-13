@@ -44,9 +44,10 @@ export function loadOrCreateAccount(accountAddress: string): Account {
   let account = Account.load(accountId);
   if (!account) {
     account = new Account(accountId);
-    account.achievedGoals = 0;
-    account.failedGoals = 0;
-    account.motivatedGoals = 0;
+    account.achievedGoals = BigInt.zero();
+    account.failedGoals = BigInt.zero();
+    account.motivatedGoals = BigInt.zero();
+    account.notMotivatedGoals = BigInt.zero();
   }
   return account;
 }

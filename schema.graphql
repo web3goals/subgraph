@@ -1,8 +1,10 @@
 type Account @entity {
   id: ID! # account address
-  achievedGoals: Int!
-  failedGoals: Int!
-  motivatedGoals: Int!
+  # Reputation
+  achievedGoals: BigInt!
+  failedGoals: BigInt!
+  motivatedGoals: BigInt!
+  notMotivatedGoals: BigInt!
 }
 
 type Goal @entity {
