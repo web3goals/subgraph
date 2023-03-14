@@ -217,6 +217,15 @@ export class Goal extends Entity {
   set acceptedMotivatorAddresses(value: Array<string>) {
     this.set("acceptedMotivatorAddresses", Value.fromStringArray(value));
   }
+
+  get steps(): Array<string> {
+    let value = this.get("steps");
+    return value!.toStringArray();
+  }
+
+  set steps(value: Array<string>) {
+    this.set("steps", Value.fromStringArray(value));
+  }
 }
 
 export class GoalMotivator extends Entity {
@@ -316,6 +325,15 @@ export class GoalStep extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get goal(): string {
+    let value = this.get("goal");
+    return value!.toString();
+  }
+
+  set goal(value: string) {
+    this.set("goal", Value.fromString(value));
   }
 
   get createdTimestamp(): BigInt {

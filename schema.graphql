@@ -23,6 +23,8 @@ type Goal @entity {
   motivatorAddresses: [String!]!
   motivatorsNumber: Int!
   acceptedMotivatorAddresses: [String!]!
+  # Steps
+  steps: [GoalStep!]! @derivedFrom(field: "goal")
 }
 
 type GoalMotivator @entity {
@@ -35,6 +37,7 @@ type GoalMotivator @entity {
 
 type GoalStep @entity {
   id: ID! # combination of goal id and event transaction hash
+  goal: Goal!
   createdTimestamp: BigInt!
   authorAddress: String!
   type: String!

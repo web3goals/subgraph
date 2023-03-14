@@ -97,6 +97,7 @@ export function createStep(
 ): GoalStep {
   let id = goal.id + "_" + event.transaction.hash.toHexString();
   let step = new GoalStep(id);
+  step.goal = goal.id;
   step.createdTimestamp = event.block.timestamp;
   step.type = type;
   step.authorAddress = event.transaction.from.toHexString();
