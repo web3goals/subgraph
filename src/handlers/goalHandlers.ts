@@ -9,8 +9,16 @@ import {
 } from "../../generated/Goal/Goal";
 import { Goal } from "../../generated/schema";
 import {
+  GOAL_STEP_TYPE_GOAL_CLOSED_AS_ACHIEVED,
+  GOAL_STEP_TYPE_GOAL_CLOSED_AS_FAILED,
+  GOAL_STEP_TYPE_GOAL_IS_SET,
+  GOAL_STEP_TYPE_MOTIVATOR_IS_ACCEPTED,
+  GOAL_STEP_TYPE_MOTIVATOR_IS_ADDED,
+} from "../constants";
+import {
   getGoalWithAddedAcceptedMotivator,
   getGoalWithAddedMotivator,
+  createStep,
   loadOrCreateAccount,
   loadOrCreateGoal,
   loadOrCreateGoalMotivator,
@@ -43,6 +51,8 @@ export function handleSet(event: Set): void {
   goal.isAchieved = event.params.params.isAchieved;
   goal.verificationRequirement = event.params.params.verificationRequirement;
   goal.save();
+  // Save step
+  createStep(event, goal, GOAL_STEP_TYPE_GOAL_IS_SET, "").save();
 }
 
 /**
@@ -67,6 +77,13 @@ export function handleMotivatorAdded(event: MotivatorAdded): void {
   // Add motivator to goal list with motivator addresses
   goal = getGoalWithAddedMotivator(goal, motivator.accountAddress);
   goal.save();
+  // Save step
+  createStep(
+    event,
+    goal,
+    GOAL_STEP_TYPE_MOTIVATOR_IS_ADDED,
+    event.params.motivator.extraDataURI
+  ).save();
 }
 
 /**
@@ -91,6 +108,8 @@ export function handleMotivatorAccepted(event: MotivatorAccepted): void {
   // Add motivator to goal list with accepted motivator addresses
   goal = getGoalWithAddedAcceptedMotivator(goal, motivator.accountAddress);
   goal.save();
+  // Save step
+  createStep(event, goal, GOAL_STEP_TYPE_MOTIVATOR_IS_ACCEPTED, "").save();
 }
 
 /**
@@ -106,6 +125,8 @@ export function handleClosedAsAchieved(event: ClosedAsAchieved): void {
   goal.isClosed = event.params.params.isClosed;
   goal.isAchieved = event.params.params.isAchieved;
   goal.save();
+  // Save step
+  createStep(event, goal, GOAL_STEP_TYPE_GOAL_CLOSED_AS_ACHIEVED, "").save();
 }
 
 /**
@@ -121,6 +142,8 @@ export function handleClosedAsFailed(event: ClosedAsFailed): void {
   goal.isClosed = event.params.params.isClosed;
   goal.isAchieved = event.params.params.isAchieved;
   goal.save();
+  // Save step
+  createStep(event, goal, GOAL_STEP_TYPE_GOAL_CLOSED_AS_FAILED, "").save();
 }
 
 /**

@@ -286,3 +286,71 @@ export class GoalMotivator extends Entity {
     this.set("isAccepted", Value.fromBoolean(value));
   }
 }
+
+export class GoalStep extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save GoalStep entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type GoalStep must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("GoalStep", id.toString(), this);
+    }
+  }
+
+  static load(id: string): GoalStep | null {
+    return changetype<GoalStep | null>(store.get("GoalStep", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get createdTimestamp(): BigInt {
+    let value = this.get("createdTimestamp");
+    return value!.toBigInt();
+  }
+
+  set createdTimestamp(value: BigInt) {
+    this.set("createdTimestamp", Value.fromBigInt(value));
+  }
+
+  get authorAddress(): string {
+    let value = this.get("authorAddress");
+    return value!.toString();
+  }
+
+  set authorAddress(value: string) {
+    this.set("authorAddress", Value.fromString(value));
+  }
+
+  get type(): string {
+    let value = this.get("type");
+    return value!.toString();
+  }
+
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
+  }
+
+  get extraDataUri(): string {
+    let value = this.get("extraDataUri");
+    return value!.toString();
+  }
+
+  set extraDataUri(value: string) {
+    this.set("extraDataUri", Value.fromString(value));
+  }
+}

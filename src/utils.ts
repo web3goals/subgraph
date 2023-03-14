@@ -1,5 +1,5 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
-import { Account, Goal, GoalMotivator } from "../generated/schema";
+import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Account, Goal, GoalMotivator, GoalStep } from "../generated/schema";
 
 export function loadOrCreateGoal(tokenId: string): Goal {
   let goalId = tokenId;
@@ -87,4 +87,19 @@ export function getGoalWithAddedAcceptedMotivator(
   newAcceptedMotivatorAddresses.push(motivatorAccountAddress);
   goal.acceptedMotivatorAddresses = newAcceptedMotivatorAddresses;
   return goal;
+}
+
+export function createStep(
+  event: ethereum.Event,
+  goal: Goal,
+  type: string,
+  extraDataUri: string
+): GoalStep {
+  let id = goal.id + "_" + event.transaction.hash.toHexString();
+  let step = new GoalStep(id);
+  step.createdTimestamp = event.block.timestamp;
+  step.type = type;
+  step.authorAddress = event.transaction.from.toHexString();
+  step.extraDataUri = extraDataUri;
+  return step;
 }

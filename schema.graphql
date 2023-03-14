@@ -32,3 +32,11 @@ type GoalMotivator @entity {
   accountAddress: String!
   isAccepted: Boolean!
 }
+
+type GoalStep @entity {
+  id: ID! # combination of goal id and event transaction hash
+  createdTimestamp: BigInt!
+  authorAddress: String!
+  type: String!
+  extraDataUri: String!
+}
