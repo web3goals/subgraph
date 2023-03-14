@@ -1,13 +1,16 @@
 import {
   AccountReputationSet,
-  MotivatorSet,
-  ParamsSet,
+  ClosedAsAchieved,
+  ClosedAsFailed,
+  MotivatorAccepted,
+  MotivatorAdded,
+  Set,
   Transfer,
 } from "../../generated/Goal/Goal";
 import { Goal } from "../../generated/schema";
 import {
-  getGoalWithAddedAcceptedGoalMotivatorAccountAddress,
-  getGoalWithAddedGoalMotivatorAccountAddress,
+  getGoalWithAddedAcceptedMotivator,
+  getGoalWithAddedMotivator,
   loadOrCreateAccount,
   loadOrCreateGoal,
   loadOrCreateGoalMotivator,
@@ -22,9 +25,9 @@ export function handleTransfer(event: Transfer): void {
 }
 
 /**
- * Handle a params set event to update a goal.
+ * Handle a set event to update a goal.
  */
-export function handleParamsSet(event: ParamsSet): void {
+export function handleSet(event: Set): void {
   // Load goal
   let goal = Goal.load(event.params.tokenId.toString());
   if (!goal) {
@@ -43,9 +46,9 @@ export function handleParamsSet(event: ParamsSet): void {
 }
 
 /**
- * Handle a motivator set event to add or update a goal motivators.
+ * Handle a motivator added event to add motivator.
  */
-export function handleMotivatorSet(event: MotivatorSet): void {
+export function handleMotivatorAdded(event: MotivatorAdded): void {
   // Load goal
   let goal = Goal.load(event.params.tokenId.toString());
   if (!goal) {
@@ -56,26 +59,67 @@ export function handleMotivatorSet(event: MotivatorSet): void {
     goal.id,
     event.params.motivatorAccountAddress.toHexString()
   );
-  // Define goal motivator is accepted
-  let isMotivatorAccepted =
-    !motivator.isAccepted && event.params.motivator.isAccepted;
   // Update goal motivator
   motivator.addedTimestamp = event.params.motivator.addedTimestamp;
   motivator.accountAddress = event.params.motivator.accountAddress.toHexString();
   motivator.isAccepted = event.params.motivator.isAccepted;
   motivator.save();
   // Add motivator to goal list with motivator addresses
-  goal = getGoalWithAddedGoalMotivatorAccountAddress(
-    goal,
-    motivator.accountAddress
-  );
-  // Add motivator to goal list with accepted motivator addresses
-  if (isMotivatorAccepted) {
-    goal = getGoalWithAddedAcceptedGoalMotivatorAccountAddress(
-      goal,
-      motivator.accountAddress
-    );
+  goal = getGoalWithAddedMotivator(goal, motivator.accountAddress);
+  goal.save();
+}
+
+/**
+ * Handle a motivator added event to update motivator.
+ */
+export function handleMotivatorAccepted(event: MotivatorAccepted): void {
+  // Load goal
+  let goal = Goal.load(event.params.tokenId.toString());
+  if (!goal) {
+    return;
   }
+  // Get motivator
+  let motivator = loadOrCreateGoalMotivator(
+    goal.id,
+    event.params.motivatorAccountAddress.toHexString()
+  );
+  // Update goal motivator
+  motivator.addedTimestamp = event.params.motivator.addedTimestamp;
+  motivator.accountAddress = event.params.motivator.accountAddress.toHexString();
+  motivator.isAccepted = event.params.motivator.isAccepted;
+  motivator.save();
+  // Add motivator to goal list with accepted motivator addresses
+  goal = getGoalWithAddedAcceptedMotivator(goal, motivator.accountAddress);
+  goal.save();
+}
+
+/**
+ * Handle a closed as achieved event to update a goal.
+ */
+export function handleClosedAsAchieved(event: ClosedAsAchieved): void {
+  // Load goal
+  let goal = Goal.load(event.params.tokenId.toString());
+  if (!goal) {
+    return;
+  }
+  // Update goal
+  goal.isClosed = event.params.params.isClosed;
+  goal.isAchieved = event.params.params.isAchieved;
+  goal.save();
+}
+
+/**
+ * Handle a closed as failed event to update a goal.
+ */
+export function handleClosedAsFailed(event: ClosedAsFailed): void {
+  // Load goal
+  let goal = Goal.load(event.params.tokenId.toString());
+  if (!goal) {
+    return;
+  }
+  // Update goal
+  goal.isClosed = event.params.params.isClosed;
+  goal.isAchieved = event.params.params.isAchieved;
   goal.save();
 }
 

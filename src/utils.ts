@@ -52,39 +52,39 @@ export function loadOrCreateAccount(accountAddress: string): Account {
   return account;
 }
 
-export function getGoalWithAddedGoalMotivatorAccountAddress(
+export function getGoalWithAddedMotivator(
   goal: Goal,
-  goalMotivatorAccountAddress: string
+  motivatorAccountAddress: string
 ): Goal {
   // Check existing motivator addresses
   for (let i = 0; i < goal.motivatorAddresses.length; i++) {
     let motivatorAddress = goal.motivatorAddresses[i];
-    if (motivatorAddress == goalMotivatorAccountAddress) {
+    if (motivatorAddress == motivatorAccountAddress) {
       return goal;
     }
   }
   // Add motivator address
   let newMotivatorAddresses = goal.motivatorAddresses;
-  newMotivatorAddresses.push(goalMotivatorAccountAddress);
+  newMotivatorAddresses.push(motivatorAccountAddress);
   goal.motivatorAddresses = newMotivatorAddresses;
   goal.motivatorsNumber = goal.motivatorsNumber + 1;
   return goal;
 }
 
-export function getGoalWithAddedAcceptedGoalMotivatorAccountAddress(
+export function getGoalWithAddedAcceptedMotivator(
   goal: Goal,
-  goalMotivatorAccountAddress: string
+  motivatorAccountAddress: string
 ): Goal {
   // Check existing motivator addresses
   for (let i = 0; i < goal.acceptedMotivatorAddresses.length; i++) {
     let motivatorAddress = goal.acceptedMotivatorAddresses[i];
-    if (motivatorAddress == goalMotivatorAccountAddress) {
+    if (motivatorAddress == motivatorAccountAddress) {
       return goal;
     }
   }
   // Add motivator address
-  let newAcceptedmotivatorAddresses = goal.acceptedMotivatorAddresses;
-  newAcceptedmotivatorAddresses.push(goalMotivatorAccountAddress);
-  goal.acceptedMotivatorAddresses = newAcceptedmotivatorAddresses;
+  let newAcceptedMotivatorAddresses = goal.acceptedMotivatorAddresses;
+  newAcceptedMotivatorAddresses.push(motivatorAccountAddress);
+  goal.acceptedMotivatorAddresses = newAcceptedMotivatorAddresses;
   return goal;
 }

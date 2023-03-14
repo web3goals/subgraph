@@ -52,32 +52,6 @@ export class AccountReputationSetAccountReputationStruct extends ethereum.Tuple 
   }
 }
 
-export class AddedVerificationData extends ethereum.Event {
-  get params(): AddedVerificationData__Params {
-    return new AddedVerificationData__Params(this);
-  }
-}
-
-export class AddedVerificationData__Params {
-  _event: AddedVerificationData;
-
-  constructor(event: AddedVerificationData) {
-    this._event = event;
-  }
-
-  get tokenId(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-
-  get key(): string {
-    return this._event.parameters[1].value.toString();
-  }
-
-  get value(): string {
-    return this._event.parameters[2].value.toString();
-  }
-}
-
 export class Approval extends ethereum.Event {
   get params(): Approval__Params {
     return new Approval__Params(this);
@@ -146,6 +120,46 @@ export class ClosedAsAchieved__Params {
   get tokenId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
   }
+
+  get params(): ClosedAsAchievedParamsStruct {
+    return changetype<ClosedAsAchievedParamsStruct>(
+      this._event.parameters[1].value.toTuple()
+    );
+  }
+}
+
+export class ClosedAsAchievedParamsStruct extends ethereum.Tuple {
+  get createdTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get description(): string {
+    return this[1].toString();
+  }
+
+  get authorAddress(): Address {
+    return this[2].toAddress();
+  }
+
+  get authorStake(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get deadlineTimestamp(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get isClosed(): boolean {
+    return this[5].toBoolean();
+  }
+
+  get isAchieved(): boolean {
+    return this[6].toBoolean();
+  }
+
+  get verificationRequirement(): string {
+    return this[7].toString();
+  }
 }
 
 export class ClosedAsFailed extends ethereum.Event {
@@ -163,6 +177,46 @@ export class ClosedAsFailed__Params {
 
   get tokenId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
+  }
+
+  get params(): ClosedAsFailedParamsStruct {
+    return changetype<ClosedAsFailedParamsStruct>(
+      this._event.parameters[1].value.toTuple()
+    );
+  }
+}
+
+export class ClosedAsFailedParamsStruct extends ethereum.Tuple {
+  get createdTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get description(): string {
+    return this[1].toString();
+  }
+
+  get authorAddress(): Address {
+    return this[2].toAddress();
+  }
+
+  get authorStake(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get deadlineTimestamp(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get isClosed(): boolean {
+    return this[5].toBoolean();
+  }
+
+  get isAchieved(): boolean {
+    return this[6].toBoolean();
+  }
+
+  get verificationRequirement(): string {
+    return this[7].toString();
   }
 }
 
@@ -184,16 +238,54 @@ export class Initialized__Params {
   }
 }
 
-export class MotivatorSet extends ethereum.Event {
-  get params(): MotivatorSet__Params {
-    return new MotivatorSet__Params(this);
+export class MessagePosted extends ethereum.Event {
+  get params(): MessagePosted__Params {
+    return new MessagePosted__Params(this);
   }
 }
 
-export class MotivatorSet__Params {
-  _event: MotivatorSet;
+export class MessagePosted__Params {
+  _event: MessagePosted;
 
-  constructor(event: MotivatorSet) {
+  constructor(event: MessagePosted) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get message(): MessagePostedMessageStruct {
+    return changetype<MessagePostedMessageStruct>(
+      this._event.parameters[1].value.toTuple()
+    );
+  }
+}
+
+export class MessagePostedMessageStruct extends ethereum.Tuple {
+  get addedTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get authorAddress(): Address {
+    return this[1].toAddress();
+  }
+
+  get extraDataURI(): string {
+    return this[2].toString();
+  }
+}
+
+export class MotivatorAccepted extends ethereum.Event {
+  get params(): MotivatorAccepted__Params {
+    return new MotivatorAccepted__Params(this);
+  }
+}
+
+export class MotivatorAccepted__Params {
+  _event: MotivatorAccepted;
+
+  constructor(event: MotivatorAccepted) {
     this._event = event;
   }
 
@@ -205,14 +297,60 @@ export class MotivatorSet__Params {
     return this._event.parameters[1].value.toAddress();
   }
 
-  get motivator(): MotivatorSetMotivatorStruct {
-    return changetype<MotivatorSetMotivatorStruct>(
+  get motivator(): MotivatorAcceptedMotivatorStruct {
+    return changetype<MotivatorAcceptedMotivatorStruct>(
       this._event.parameters[2].value.toTuple()
     );
   }
 }
 
-export class MotivatorSetMotivatorStruct extends ethereum.Tuple {
+export class MotivatorAcceptedMotivatorStruct extends ethereum.Tuple {
+  get addedTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get accountAddress(): Address {
+    return this[1].toAddress();
+  }
+
+  get isAccepted(): boolean {
+    return this[2].toBoolean();
+  }
+
+  get extraDataURI(): string {
+    return this[3].toString();
+  }
+}
+
+export class MotivatorAdded extends ethereum.Event {
+  get params(): MotivatorAdded__Params {
+    return new MotivatorAdded__Params(this);
+  }
+}
+
+export class MotivatorAdded__Params {
+  _event: MotivatorAdded;
+
+  constructor(event: MotivatorAdded) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get motivatorAccountAddress(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
+  get motivator(): MotivatorAddedMotivatorStruct {
+    return changetype<MotivatorAddedMotivatorStruct>(
+      this._event.parameters[2].value.toTuple()
+    );
+  }
+}
+
+export class MotivatorAddedMotivatorStruct extends ethereum.Tuple {
   get addedTimestamp(): BigInt {
     return this[0].toBigInt();
   }
@@ -252,64 +390,6 @@ export class OwnershipTransferred__Params {
   }
 }
 
-export class ParamsSet extends ethereum.Event {
-  get params(): ParamsSet__Params {
-    return new ParamsSet__Params(this);
-  }
-}
-
-export class ParamsSet__Params {
-  _event: ParamsSet;
-
-  constructor(event: ParamsSet) {
-    this._event = event;
-  }
-
-  get tokenId(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-
-  get params(): ParamsSetParamsStruct {
-    return changetype<ParamsSetParamsStruct>(
-      this._event.parameters[1].value.toTuple()
-    );
-  }
-}
-
-export class ParamsSetParamsStruct extends ethereum.Tuple {
-  get createdTimestamp(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get description(): string {
-    return this[1].toString();
-  }
-
-  get authorAddress(): Address {
-    return this[2].toAddress();
-  }
-
-  get authorStake(): BigInt {
-    return this[3].toBigInt();
-  }
-
-  get deadlineTimestamp(): BigInt {
-    return this[4].toBigInt();
-  }
-
-  get isClosed(): boolean {
-    return this[5].toBoolean();
-  }
-
-  get isAchieved(): boolean {
-    return this[6].toBoolean();
-  }
-
-  get verificationRequirement(): string {
-    return this[7].toString();
-  }
-}
-
 export class Paused extends ethereum.Event {
   get params(): Paused__Params {
     return new Paused__Params(this);
@@ -343,6 +423,64 @@ export class SentToVerifier__Params {
 
   get tokenId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
+  }
+}
+
+export class Set extends ethereum.Event {
+  get params(): Set__Params {
+    return new Set__Params(this);
+  }
+}
+
+export class Set__Params {
+  _event: Set;
+
+  constructor(event: Set) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get params(): SetParamsStruct {
+    return changetype<SetParamsStruct>(
+      this._event.parameters[1].value.toTuple()
+    );
+  }
+}
+
+export class SetParamsStruct extends ethereum.Tuple {
+  get createdTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get description(): string {
+    return this[1].toString();
+  }
+
+  get authorAddress(): Address {
+    return this[2].toAddress();
+  }
+
+  get authorStake(): BigInt {
+    return this[3].toBigInt();
+  }
+
+  get deadlineTimestamp(): BigInt {
+    return this[4].toBigInt();
+  }
+
+  get isClosed(): boolean {
+    return this[5].toBoolean();
+  }
+
+  get isAchieved(): boolean {
+    return this[6].toBoolean();
+  }
+
+  get verificationRequirement(): string {
+    return this[7].toString();
   }
 }
 
@@ -387,6 +525,32 @@ export class Unpaused__Params {
 
   get account(): Address {
     return this._event.parameters[0].value.toAddress();
+  }
+}
+
+export class VerificationDataSet extends ethereum.Event {
+  get params(): VerificationDataSet__Params {
+    return new VerificationDataSet__Params(this);
+  }
+}
+
+export class VerificationDataSet__Params {
+  _event: VerificationDataSet;
+
+  constructor(event: VerificationDataSet) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get key(): string {
+    return this._event.parameters[1].value.toString();
+  }
+
+  get value(): string {
+    return this._event.parameters[2].value.toString();
   }
 }
 
@@ -1206,6 +1370,40 @@ export class PauseCall__Outputs {
   _call: PauseCall;
 
   constructor(call: PauseCall) {
+    this._call = call;
+  }
+}
+
+export class PostMessageCall extends ethereum.Call {
+  get inputs(): PostMessageCall__Inputs {
+    return new PostMessageCall__Inputs(this);
+  }
+
+  get outputs(): PostMessageCall__Outputs {
+    return new PostMessageCall__Outputs(this);
+  }
+}
+
+export class PostMessageCall__Inputs {
+  _call: PostMessageCall;
+
+  constructor(call: PostMessageCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get extraDataURI(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class PostMessageCall__Outputs {
+  _call: PostMessageCall;
+
+  constructor(call: PostMessageCall) {
     this._call = call;
   }
 }
