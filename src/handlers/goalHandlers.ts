@@ -2,6 +2,7 @@ import {
   AccountReputationSet,
   ClosedAsAchieved,
   ClosedAsFailed,
+  MessagePosted,
   MotivatorAccepted,
   MotivatorAdded,
   Set,
@@ -12,6 +13,7 @@ import {
   GOAL_STEP_TYPE_GOAL_CLOSED_AS_ACHIEVED,
   GOAL_STEP_TYPE_GOAL_CLOSED_AS_FAILED,
   GOAL_STEP_TYPE_GOAL_IS_SET,
+  GOAL_STEP_TYPE_MESSAGE_IS_POSTED,
   GOAL_STEP_TYPE_MOTIVATOR_IS_ACCEPTED,
   GOAL_STEP_TYPE_MOTIVATOR_IS_ADDED,
 } from "../constants";
@@ -110,6 +112,24 @@ export function handleMotivatorAccepted(event: MotivatorAccepted): void {
   goal.save();
   // Save step
   createStep(event, goal, GOAL_STEP_TYPE_MOTIVATOR_IS_ACCEPTED, "").save();
+}
+
+/**
+ * Handle a message posted event to save step.
+ */
+export function handleMessagePosted(event: MessagePosted): void {
+  // Load goal
+  let goal = Goal.load(event.params.tokenId.toString());
+  if (!goal) {
+    return;
+  }
+  // Save step
+  createStep(
+    event,
+    goal,
+    GOAL_STEP_TYPE_MESSAGE_IS_POSTED,
+    event.params.message.extraDataURI
+  ).save();
 }
 
 /**

@@ -18,6 +18,7 @@ dataSources:
         - Set
         - MotivatorAdded
         - MotivatorAccepted
+        - MessagePosted
         - ClosedAsAchieved
         - ClosedAsFailed
         - AccountReputationSet
@@ -33,6 +34,8 @@ dataSources:
           handler: handleMotivatorAdded
         - event: MotivatorAccepted(indexed uint256,indexed address,(uint256,address,bool,string))
           handler: handleMotivatorAccepted
+        - event: MessagePosted(indexed uint256,(uint256,address,string))
+          handler: handleMessagePosted
         - event: ClosedAsAchieved(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
           handler: handleClosedAsAchieved
         - event: ClosedAsFailed(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
