@@ -45,3 +45,29 @@ dataSources:
         - event: AccountReputationSet(indexed address,(uint256,uint256,uint256,uint256))
           handler: handleAccountReputationSet
       file: ./src/handlers/goalHandlers.ts
+  - kind: ethereum
+    name: TrustingVerifier
+    network: mumbai
+    source:
+      address: "0x5b93282ebD6d40BE5804B3d7679feCcb42e9D4bc"
+      abi: TrustingVerifier
+      startBlock: 33105424
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - GoalVerifiedAsAchieved
+        - GoalVerifiedAsFailed
+        - GoalVerifiedAsNotAchievedYet
+      abis:
+        - name: TrustingVerifier
+          file: ./abis/TrustingVerifier.json
+      eventHandlers:
+        - event: GoalVerifiedAsAchieved(indexed uint256)
+          handler: handleGoalVerifiedAsAchieved
+        - event: GoalVerifiedAsFailed(indexed uint256)
+          handler: handleGoalVerifiedAsFailed
+        - event: GoalVerifiedAsNotAchievedYet(indexed uint256)
+          handler: handleGoalVerifiedAsNotAchievedYet
+      file: ./src/handlers/trustingVerifierHandlers.ts
