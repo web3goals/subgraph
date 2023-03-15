@@ -114,7 +114,13 @@ export function handleMotivatorAccepted(event: MotivatorAccepted): void {
   goal = getGoalWithAddedAcceptedMotivator(goal, motivator.accountAddress);
   goal.save();
   // Save step
-  createStep(event, goal, GOAL_STEP_TYPE_MOTIVATOR_ACCEPTED, "", "").save();
+  createStep(
+    event,
+    goal,
+    GOAL_STEP_TYPE_MOTIVATOR_ACCEPTED,
+    "MOTIVATOR_ACCOUNT_ADDRESS=" + motivator.accountAddress,
+    ""
+  ).save();
 }
 
 /**
