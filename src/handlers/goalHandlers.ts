@@ -7,20 +7,22 @@ import {
   MotivatorAdded,
   Set,
   Transfer,
+  VerificationDataSet,
 } from "../../generated/Goal/Goal";
 import { Goal } from "../../generated/schema";
 import {
   GOAL_STEP_TYPE_GOAL_CLOSED_AS_ACHIEVED,
   GOAL_STEP_TYPE_GOAL_CLOSED_AS_FAILED,
-  GOAL_STEP_TYPE_GOAL_IS_SET,
-  GOAL_STEP_TYPE_MESSAGE_IS_POSTED,
-  GOAL_STEP_TYPE_MOTIVATOR_IS_ACCEPTED,
-  GOAL_STEP_TYPE_MOTIVATOR_IS_ADDED,
+  GOAL_STEP_TYPE_GOAL_SET,
+  GOAL_STEP_TYPE_MESSAGE_POSTED,
+  GOAL_STEP_TYPE_MOTIVATOR_ACCEPTED,
+  GOAL_STEP_TYPE_MOTIVATOR_ADDED,
+  GOAL_STEP_TYPE_VERIFICATION_DATA_SET,
 } from "../constants";
 import {
+  createStep,
   getGoalWithAddedAcceptedMotivator,
   getGoalWithAddedMotivator,
-  createStep,
   loadOrCreateAccount,
   loadOrCreateGoal,
   loadOrCreateGoalMotivator,
@@ -54,7 +56,7 @@ export function handleSet(event: Set): void {
   goal.verificationRequirement = event.params.params.verificationRequirement;
   goal.save();
   // Save step
-  createStep(event, goal, GOAL_STEP_TYPE_GOAL_IS_SET, "").save();
+  createStep(event, goal, GOAL_STEP_TYPE_GOAL_SET, "", "").save();
 }
 
 /**
@@ -83,7 +85,8 @@ export function handleMotivatorAdded(event: MotivatorAdded): void {
   createStep(
     event,
     goal,
-    GOAL_STEP_TYPE_MOTIVATOR_IS_ADDED,
+    GOAL_STEP_TYPE_MOTIVATOR_ADDED,
+    "",
     event.params.motivator.extraDataURI
   ).save();
 }
@@ -111,7 +114,7 @@ export function handleMotivatorAccepted(event: MotivatorAccepted): void {
   goal = getGoalWithAddedAcceptedMotivator(goal, motivator.accountAddress);
   goal.save();
   // Save step
-  createStep(event, goal, GOAL_STEP_TYPE_MOTIVATOR_IS_ACCEPTED, "").save();
+  createStep(event, goal, GOAL_STEP_TYPE_MOTIVATOR_ACCEPTED, "", "").save();
 }
 
 /**
@@ -127,8 +130,28 @@ export function handleMessagePosted(event: MessagePosted): void {
   createStep(
     event,
     goal,
-    GOAL_STEP_TYPE_MESSAGE_IS_POSTED,
+    GOAL_STEP_TYPE_MESSAGE_POSTED,
+    "",
     event.params.message.extraDataURI
+  ).save();
+}
+
+/**
+ * Handle a verification data set event to save step.
+ */
+export function handleVerificationDataSet(event: VerificationDataSet): void {
+  // Load goal
+  let goal = Goal.load(event.params.tokenId.toString());
+  if (!goal) {
+    return;
+  }
+  // Save step
+  createStep(
+    event,
+    goal,
+    GOAL_STEP_TYPE_VERIFICATION_DATA_SET,
+    event.params.key + "=" + event.params.value,
+    ""
   ).save();
 }
 
@@ -146,7 +169,13 @@ export function handleClosedAsAchieved(event: ClosedAsAchieved): void {
   goal.isAchieved = event.params.params.isAchieved;
   goal.save();
   // Save step
-  createStep(event, goal, GOAL_STEP_TYPE_GOAL_CLOSED_AS_ACHIEVED, "").save();
+  createStep(
+    event,
+    goal,
+    GOAL_STEP_TYPE_GOAL_CLOSED_AS_ACHIEVED,
+    "",
+    ""
+  ).save();
 }
 
 /**
@@ -163,7 +192,7 @@ export function handleClosedAsFailed(event: ClosedAsFailed): void {
   goal.isAchieved = event.params.params.isAchieved;
   goal.save();
   // Save step
-  createStep(event, goal, GOAL_STEP_TYPE_GOAL_CLOSED_AS_FAILED, "").save();
+  createStep(event, goal, GOAL_STEP_TYPE_GOAL_CLOSED_AS_FAILED, "", "").save();
 }
 
 /**

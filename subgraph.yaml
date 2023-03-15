@@ -36,6 +36,8 @@ dataSources:
           handler: handleMotivatorAccepted
         - event: MessagePosted(indexed uint256,(uint256,address,string))
           handler: handleMessagePosted
+        - event: VerificationDataSet(indexed uint256,string,string)
+          handler: handleVerificationDataSet
         - event: ClosedAsAchieved(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
           handler: handleClosedAsAchieved
         - event: ClosedAsFailed(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))

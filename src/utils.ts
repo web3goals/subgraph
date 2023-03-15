@@ -93,6 +93,7 @@ export function createStep(
   event: ethereum.Event,
   goal: Goal,
   type: string,
+  extraData: string,
   extraDataUri: string
 ): GoalStep {
   let id = goal.id + "_" + event.transaction.hash.toHexString();
@@ -101,6 +102,7 @@ export function createStep(
   step.createdTimestamp = event.block.timestamp;
   step.type = type;
   step.authorAddress = event.transaction.from.toHexString();
+  step.extraData = extraData;
   step.extraDataUri = extraDataUri;
   return step;
 }

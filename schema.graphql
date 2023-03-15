@@ -41,5 +41,6 @@ type GoalStep @entity {
   createdTimestamp: BigInt!
   authorAddress: String!
   type: String!
+  extraData: String!
   extraDataUri: String!
 }

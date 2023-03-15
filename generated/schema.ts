@@ -363,6 +363,15 @@ export class GoalStep extends Entity {
     this.set("type", Value.fromString(value));
   }
 
+  get extraData(): string {
+    let value = this.get("extraData");
+    return value!.toString();
+  }
+
+  set extraData(value: string) {
+    this.set("extraData", Value.fromString(value));
+  }
+
   get extraDataUri(): string {
     let value = this.get("extraDataUri");
     return value!.toString();
