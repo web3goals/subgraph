@@ -2,8 +2,8 @@
 
 ## Subgraph links
 
-- Development - https://thegraph.com/hosted-service/subgraph/kiv1n/web3-goals-dev
-- Production - https://thegraph.com/hosted-service/subgraph/kiv1n/web3-goals
+- Mumbai Development - https://thegraph.com/hosted-service/subgraph/kiv1n/web3-goals-dev
+- Mumbai Production - https://thegraph.com/hosted-service/subgraph/kiv1n/web3-goals
 
 ## Commands
 
@@ -11,5 +11,5 @@
 - Install dependencies: `yarn install`
 - Set deployment key: `graph auth`
 - Update generated code: `yarn codegen`
-- Deploy to development subgraph: `yarn deploy`
-- Deploy to production subgraph: `graph deploy --node https://api.thegraph.com/deploy/ kiv1n/web3-goals`
+- Deploy to mumbai development subgraph: `yarn deploy-mumbai`
+- Deploy to mumbai production subgraph: `graph deploy --node https://api.thegraph.com/deploy/ kiv1n/web3-goals subgraph-mumbai.yaml`
