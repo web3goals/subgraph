@@ -1,0 +1,73 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Goal
+    network: filecoin
+    source:
+      address: "0x96a5281959d962bA18481BEAfBe25C6c98316C95"
+      abi: Goal
+      startBlock: 2697430
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+        - Set
+        - MotivatorAdded
+        - MotivatorAccepted
+        - MessagePosted
+        - ClosedAsAchieved
+        - ClosedAsFailed
+        - AccountReputationSet
+      abis:
+        - name: Goal
+          file: ./abis/Goal.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        - event: Set(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
+          handler: handleSet
+        - event: MotivatorAdded(indexed uint256,indexed address,(uint256,address,bool,string))
+          handler: handleMotivatorAdded
+        - event: MotivatorAccepted(indexed uint256,indexed address,(uint256,address,bool,string))
+          handler: handleMotivatorAccepted
+        - event: MessagePosted(indexed uint256,(uint256,address,string))
+          handler: handleMessagePosted
+        - event: VerificationDataSet(indexed uint256,string,string)
+          handler: handleVerificationDataSet
+        - event: ClosedAsAchieved(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
+          handler: handleClosedAsAchieved
+        - event: ClosedAsFailed(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
+          handler: handleClosedAsFailed
+        - event: AccountReputationSet(indexed address,(uint256,uint256,uint256,uint256))
+          handler: handleAccountReputationSet
+      file: ./src/handlers/goalHandlers.ts
+  - kind: ethereum
+    name: TrustingVerifier
+    network: filecoin
+    source:
+      address: "0xdfE15Cc65697c04C083982B8a053E2FE4cf54669"
+      abi: TrustingVerifier
+      startBlock: 2697430
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - GoalVerifiedAsAchieved
+        - GoalVerifiedAsFailed
+        - GoalVerifiedAsNotAchievedYet
+      abis:
+        - name: TrustingVerifier
+          file: ./abis/TrustingVerifier.json
+      eventHandlers:
+        - event: GoalVerifiedAsAchieved(indexed uint256)
+          handler: handleGoalVerifiedAsAchieved
+        - event: GoalVerifiedAsFailed(indexed uint256)
+          handler: handleGoalVerifiedAsFailed
+        - event: GoalVerifiedAsNotAchievedYet(indexed uint256)
+          handler: handleGoalVerifiedAsNotAchievedYet
+      file: ./src/handlers/trustingVerifierHandlers.ts
