@@ -12,5 +12,5 @@
 - Set deployment key: `graph auth`
 - Update generated code: `yarn codegen`
 - Deploy to mumbai development subgraph: `yarn deploy-mumbai`
-- Deploy to mumbai production subgraph: `graph deploy --node https://api.thegraph.com/deploy/ kiv1n/web3-goals subgraph-mumbai.yaml`
-- Deploy to filecoin production subgraph: `graph deploy --node http://45.76.90.200:8020 --ipfs http://45.76.90.200:5001 kiv1n/web3-goals subgraph-filecoin.yaml`
+- Deploy to mumbai production subgraph: `graph deploy --node https://api.thegraph.com/deploy/ kiv1n/web3-goals subgraph-mumbai-production.yaml`
+- Deploy to filecoin production subgraph: `graph deploy --node http://45.76.90.200:8020 --ipfs http://45.76.90.200:5001 kiv1n/web3-goals subgraph-filecoin-production.yaml`
