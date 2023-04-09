@@ -6,9 +6,9 @@ dataSources:
     name: Goal
     network: mumbai
     source:
-      address: "0x93d3a8C97E4F08fA709AaAfB65AbEDCcC00a2C83"
+      address: "0x4659fAA8DA43AF058D34d8fb956f89BEFf7ef60c"
       abi: Goal
-      startBlock: 33433697
+      startBlock: 33105433
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -49,9 +49,9 @@ dataSources:
     name: TrustingVerifier
     network: mumbai
     source:
-      address: "0xC74BA44fa161FAf37aDa76517bDF8a61119E98bb"
+      address: "0x5b93282ebD6d40BE5804B3d7679feCcb42e9D4bc"
       abi: TrustingVerifier
-      startBlock: 33433692
+      startBlock: 33105424
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
