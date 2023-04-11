@@ -42,6 +42,33 @@ export class Account extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get profileId(): string {
+    let value = this.get("profileId");
+    return value!.toString();
+  }
+
+  set profileId(value: string) {
+    this.set("profileId", Value.fromString(value));
+  }
+
+  get profileCreatedTimestamp(): BigInt {
+    let value = this.get("profileCreatedTimestamp");
+    return value!.toBigInt();
+  }
+
+  set profileCreatedTimestamp(value: BigInt) {
+    this.set("profileCreatedTimestamp", Value.fromBigInt(value));
+  }
+
+  get profileUri(): string {
+    let value = this.get("profileUri");
+    return value!.toString();
+  }
+
+  set profileUri(value: string) {
+    this.set("profileUri", Value.fromString(value));
+  }
+
   get achievedGoals(): BigInt {
     let value = this.get("achievedGoals");
     return value!.toBigInt();

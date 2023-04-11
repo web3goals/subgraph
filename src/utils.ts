@@ -44,6 +44,11 @@ export function loadOrCreateAccount(accountAddress: string): Account {
   let account = Account.load(accountId);
   if (!account) {
     account = new Account(accountId);
+    // Defaults for profile
+    account.profileId = "";
+    account.profileCreatedTimestamp = BigInt.zero();
+    account.profileUri = "";
+    // Defaults for reputation
     account.achievedGoals = BigInt.zero();
     account.failedGoals = BigInt.zero();
     account.motivatedGoals = BigInt.zero();
