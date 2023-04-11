@@ -1,5 +1,6 @@
 {
   "name": "web3goals-subgraph",
+  "version": "0.1",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
