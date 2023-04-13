@@ -71,3 +71,26 @@ dataSources:
         - event: GoalVerifiedAsNotAchievedYet(indexed uint256)
           handler: handleGoalVerifiedAsNotAchievedYet
       file: ./src/handlers/trustingVerifierHandlers.ts
+  - kind: ethereum
+    name: Profile
+    network: mumbai
+    source:
+      address: "0xD67EA1d21c374DfB6618F35B0e40426ac42cE557"
+      abi: Profile
+      startBlock: 33433708
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+        - URISet
+      abis:
+        - name: Profile
+          file: ./abis/Profile.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        - event: URISet(indexed uint256,string)
+          handler: handleUriSet
+      file: ./src/handlers/profileHandlers.ts
