@@ -34,6 +34,11 @@ export function loadOrCreateGoal(tokenId: string): Goal {
     goal.isClosed = false;
     goal.isAchieved = false;
     goal.extraDataURI = "";
+    // Defaults for messages
+    goal.messagesNumber = 0;
+    // Defaults for motivators
+    goal.motivatorAddresses = new Array<string>();
+    goal.motivatorsNumber = 0;
   }
   return goal;
 }

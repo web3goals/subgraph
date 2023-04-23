@@ -218,6 +218,24 @@ export class Goal extends Entity {
     this.set("extraDataURI", Value.fromString(value));
   }
 
+  get motivatorAddresses(): Array<string> {
+    let value = this.get("motivatorAddresses");
+    return value!.toStringArray();
+  }
+
+  set motivatorAddresses(value: Array<string>) {
+    this.set("motivatorAddresses", Value.fromStringArray(value));
+  }
+
+  get motivatorsNumber(): i32 {
+    let value = this.get("motivatorsNumber");
+    return value!.toI32();
+  }
+
+  set motivatorsNumber(value: i32) {
+    this.set("motivatorsNumber", Value.fromI32(value));
+  }
+
   get messages(): Array<string> {
     let value = this.get("messages");
     return value!.toStringArray();
@@ -225,6 +243,15 @@ export class Goal extends Entity {
 
   set messages(value: Array<string>) {
     this.set("messages", Value.fromStringArray(value));
+  }
+
+  get messagesNumber(): i32 {
+    let value = this.get("messagesNumber");
+    return value!.toI32();
+  }
+
+  set messagesNumber(value: i32) {
+    this.set("messagesNumber", Value.fromI32(value));
   }
 }
 

@@ -23,8 +23,12 @@ type Goal @entity {
   isClosed: Boolean!
   isAchieved: Boolean!
   extraDataURI: String!
+  # Motivators
+  motivatorAddresses: [String!]!
+  motivatorsNumber: Int!
   # Messages
   messages: [GoalMessage!]! @derivedFrom(field: "goal")
+  messagesNumber: Int!
 }
 
 type GoalMessage @entity {

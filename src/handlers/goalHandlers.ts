@@ -3,6 +3,7 @@ import {
   ClosedAsFailed,
   MessageEvaluated,
   MessagePosted,
+  MotivatorAdded,
   ProofPosted,
   Set,
   Transfer,
@@ -52,6 +53,9 @@ export function handleSet(event: Set): void {
     GOAL_MESSAGE_TYPE_GOAL_SET,
     ""
   ).save();
+  // Update goal messages number
+  goal.messagesNumber = goal.messagesNumber + 1;
+  goal.save();
 }
 
 /**
@@ -71,6 +75,28 @@ export function handleProofPosted(event: ProofPosted): void {
     GOAL_MESSAGE_TYPE_PROOF_POSTED,
     event.params.proof.extraDataURI
   ).save();
+  // Update goal messages number
+  goal.messagesNumber = goal.messagesNumber + 1;
+  goal.save();
+}
+
+/**
+ * Handle a motivator add event to update goal.
+ */
+export function handleMotivatorAdded(event: MotivatorAdded): void {
+  // Load goal
+  let goal = Goal.load(event.params.tokenId.toString());
+  if (!goal) {
+    return;
+  }
+  // Update goal
+  let newMotivatorAddresses = goal.motivatorAddresses;
+  newMotivatorAddresses.push(
+    event.params.motivatorAccountAddress.toHexString()
+  );
+  goal.motivatorAddresses = newMotivatorAddresses;
+  goal.motivatorsNumber = goal.motivatorsNumber + 1;
+  goal.save();
 }
 
 /**
@@ -90,6 +116,9 @@ export function handleMessagePosted(event: MessagePosted): void {
     GOAL_MESSAGE_TYPE_MESSAGE_POSTED,
     event.params.message.extraDataURI
   ).save();
+  // Update goal messages number
+  goal.messagesNumber = goal.messagesNumber + 1;
+  goal.save();
 }
 
 /**
@@ -135,6 +164,9 @@ export function handleClosedAsAchieved(event: ClosedAsAchieved): void {
     GOAL_MESSAGE_TYPE_GOAL_CLOSED_AS_ACHIEVED,
     ""
   ).save();
+  // Update goal messages number
+  goal.messagesNumber = goal.messagesNumber + 1;
+  goal.save();
 }
 
 /**
@@ -158,4 +190,7 @@ export function handleClosedAsFailed(event: ClosedAsFailed): void {
     GOAL_MESSAGE_TYPE_GOAL_CLOSED_AS_FAILED,
     ""
   ).save();
+  // Update goal messages number
+  goal.messagesNumber = goal.messagesNumber + 1;
+  goal.save();
 }
