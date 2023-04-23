@@ -5,10 +5,11 @@ type Account @entity {
   profileCreatedTimestamp: BigInt!
   profileUri: String!
   # Reputation
+  goals: BigInt!
   achievedGoals: BigInt!
   failedGoals: BigInt!
-  motivatedGoals: BigInt!
-  notMotivatedGoals: BigInt!
+  motivations: BigInt!
+  superMotivations: BigInt!
 }
 
 type Goal @entity {
@@ -21,30 +22,18 @@ type Goal @entity {
   deadlineTimestamp: BigInt!
   isClosed: Boolean!
   isAchieved: Boolean!
-  verificationRequirement: String!
-  # Motivators
-  motivators: [GoalMotivator!]! @derivedFrom(field: "goal")
-  motivatorAddresses: [String!]!
-  motivatorsNumber: Int!
-  acceptedMotivatorAddresses: [String!]!
-  # Steps
-  steps: [GoalStep!]! @derivedFrom(field: "goal")
+  extraDataURI: String!
+  # Messages
+  messages: [GoalMessage!]! @derivedFrom(field: "goal")
 }
 
-type GoalMotivator @entity {
-  id: ID! # combination of goal id and account address
+type GoalMessage @entity {
+  id: ID! # combination of goal id and message id (goal contract message id or event transaction hash)
   goal: Goal!
   addedTimestamp: BigInt!
-  accountAddress: String!
-  isAccepted: Boolean!
-}
-
-type GoalStep @entity {
-  id: ID! # combination of goal id and event transaction hash
-  goal: Goal!
-  createdTimestamp: BigInt!
   authorAddress: String!
   type: String!
-  extraData: String!
+  isMotivating: Boolean!
+  isSuperMotivating: Boolean!
   extraDataUri: String!
 }

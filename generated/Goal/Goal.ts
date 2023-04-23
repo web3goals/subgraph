@@ -10,48 +10,6 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
-export class AccountReputationSet extends ethereum.Event {
-  get params(): AccountReputationSet__Params {
-    return new AccountReputationSet__Params(this);
-  }
-}
-
-export class AccountReputationSet__Params {
-  _event: AccountReputationSet;
-
-  constructor(event: AccountReputationSet) {
-    this._event = event;
-  }
-
-  get accountAddress(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get accountReputation(): AccountReputationSetAccountReputationStruct {
-    return changetype<AccountReputationSetAccountReputationStruct>(
-      this._event.parameters[1].value.toTuple()
-    );
-  }
-}
-
-export class AccountReputationSetAccountReputationStruct extends ethereum.Tuple {
-  get achievedGoals(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get failedGoals(): BigInt {
-    return this[1].toBigInt();
-  }
-
-  get motivatedGoals(): BigInt {
-    return this[2].toBigInt();
-  }
-
-  get notMotivatedGoals(): BigInt {
-    return this[3].toBigInt();
-  }
-}
-
 export class Approval extends ethereum.Event {
   get params(): Approval__Params {
     return new Approval__Params(this);
@@ -157,7 +115,7 @@ export class ClosedAsAchievedParamsStruct extends ethereum.Tuple {
     return this[6].toBoolean();
   }
 
-  get verificationRequirement(): string {
+  get extraDataURI(): string {
     return this[7].toString();
   }
 }
@@ -215,7 +173,7 @@ export class ClosedAsFailedParamsStruct extends ethereum.Tuple {
     return this[6].toBoolean();
   }
 
-  get verificationRequirement(): string {
+  get extraDataURI(): string {
     return this[7].toString();
   }
 }
@@ -238,6 +196,56 @@ export class Initialized__Params {
   }
 }
 
+export class MessageEvaluated extends ethereum.Event {
+  get params(): MessageEvaluated__Params {
+    return new MessageEvaluated__Params(this);
+  }
+}
+
+export class MessageEvaluated__Params {
+  _event: MessageEvaluated;
+
+  constructor(event: MessageEvaluated) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get messageId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get message(): MessageEvaluatedMessageStruct {
+    return changetype<MessageEvaluatedMessageStruct>(
+      this._event.parameters[2].value.toTuple()
+    );
+  }
+}
+
+export class MessageEvaluatedMessageStruct extends ethereum.Tuple {
+  get addedTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get authorAddress(): Address {
+    return this[1].toAddress();
+  }
+
+  get isMotivating(): boolean {
+    return this[2].toBoolean();
+  }
+
+  get isSuperMotivating(): boolean {
+    return this[3].toBoolean();
+  }
+
+  get extraDataURI(): string {
+    return this[4].toString();
+  }
+}
+
 export class MessagePosted extends ethereum.Event {
   get params(): MessagePosted__Params {
     return new MessagePosted__Params(this);
@@ -255,9 +263,13 @@ export class MessagePosted__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
+  get messageId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
   get message(): MessagePostedMessageStruct {
     return changetype<MessagePostedMessageStruct>(
-      this._event.parameters[1].value.toTuple()
+      this._event.parameters[2].value.toTuple()
     );
   }
 }
@@ -271,54 +283,16 @@ export class MessagePostedMessageStruct extends ethereum.Tuple {
     return this[1].toAddress();
   }
 
-  get extraDataURI(): string {
-    return this[2].toString();
-  }
-}
-
-export class MotivatorAccepted extends ethereum.Event {
-  get params(): MotivatorAccepted__Params {
-    return new MotivatorAccepted__Params(this);
-  }
-}
-
-export class MotivatorAccepted__Params {
-  _event: MotivatorAccepted;
-
-  constructor(event: MotivatorAccepted) {
-    this._event = event;
-  }
-
-  get tokenId(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-
-  get motivatorAccountAddress(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
-  get motivator(): MotivatorAcceptedMotivatorStruct {
-    return changetype<MotivatorAcceptedMotivatorStruct>(
-      this._event.parameters[2].value.toTuple()
-    );
-  }
-}
-
-export class MotivatorAcceptedMotivatorStruct extends ethereum.Tuple {
-  get addedTimestamp(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get accountAddress(): Address {
-    return this[1].toAddress();
-  }
-
-  get isAccepted(): boolean {
+  get isMotivating(): boolean {
     return this[2].toBoolean();
   }
 
+  get isSuperMotivating(): boolean {
+    return this[3].toBoolean();
+  }
+
   get extraDataURI(): string {
-    return this[3].toString();
+    return this[4].toString();
   }
 }
 
@@ -351,20 +325,58 @@ export class MotivatorAdded__Params {
 }
 
 export class MotivatorAddedMotivatorStruct extends ethereum.Tuple {
-  get addedTimestamp(): BigInt {
-    return this[0].toBigInt();
-  }
-
   get accountAddress(): Address {
-    return this[1].toAddress();
+    return this[0].toAddress();
   }
 
-  get isAccepted(): boolean {
-    return this[2].toBoolean();
+  get motivations(): BigInt {
+    return this[1].toBigInt();
   }
 
-  get extraDataURI(): string {
-    return this[3].toString();
+  get superMotivations(): BigInt {
+    return this[2].toBigInt();
+  }
+}
+
+export class MotivatorUpdated extends ethereum.Event {
+  get params(): MotivatorUpdated__Params {
+    return new MotivatorUpdated__Params(this);
+  }
+}
+
+export class MotivatorUpdated__Params {
+  _event: MotivatorUpdated;
+
+  constructor(event: MotivatorUpdated) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get motivatorAccountAddress(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
+  get motivator(): MotivatorUpdatedMotivatorStruct {
+    return changetype<MotivatorUpdatedMotivatorStruct>(
+      this._event.parameters[2].value.toTuple()
+    );
+  }
+}
+
+export class MotivatorUpdatedMotivatorStruct extends ethereum.Tuple {
+  get accountAddress(): Address {
+    return this[0].toAddress();
+  }
+
+  get motivations(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get superMotivations(): BigInt {
+    return this[2].toBigInt();
   }
 }
 
@@ -408,21 +420,37 @@ export class Paused__Params {
   }
 }
 
-export class SentToVerifier extends ethereum.Event {
-  get params(): SentToVerifier__Params {
-    return new SentToVerifier__Params(this);
+export class ProofPosted extends ethereum.Event {
+  get params(): ProofPosted__Params {
+    return new ProofPosted__Params(this);
   }
 }
 
-export class SentToVerifier__Params {
-  _event: SentToVerifier;
+export class ProofPosted__Params {
+  _event: ProofPosted;
 
-  constructor(event: SentToVerifier) {
+  constructor(event: ProofPosted) {
     this._event = event;
   }
 
   get tokenId(): BigInt {
     return this._event.parameters[0].value.toBigInt();
+  }
+
+  get proof(): ProofPostedProofStruct {
+    return changetype<ProofPostedProofStruct>(
+      this._event.parameters[1].value.toTuple()
+    );
+  }
+}
+
+export class ProofPostedProofStruct extends ethereum.Tuple {
+  get addedTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get extraDataURI(): string {
+    return this[1].toString();
   }
 }
 
@@ -479,7 +507,7 @@ export class SetParamsStruct extends ethereum.Tuple {
     return this[6].toBoolean();
   }
 
-  get verificationRequirement(): string {
+  get extraDataURI(): string {
     return this[7].toString();
   }
 }
@@ -528,65 +556,64 @@ export class Unpaused__Params {
   }
 }
 
-export class VerificationDataSet extends ethereum.Event {
-  get params(): VerificationDataSet__Params {
-    return new VerificationDataSet__Params(this);
-  }
-}
-
-export class VerificationDataSet__Params {
-  _event: VerificationDataSet;
-
-  constructor(event: VerificationDataSet) {
-    this._event = event;
-  }
-
-  get tokenId(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-
-  get key(): string {
-    return this._event.parameters[1].value.toString();
-  }
-
-  get value(): string {
-    return this._event.parameters[2].value.toString();
-  }
-}
-
-export class Goal__getAccountReputationResultValue0Struct extends ethereum.Tuple {
-  get achievedGoals(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get failedGoals(): BigInt {
-    return this[1].toBigInt();
-  }
-
-  get motivatedGoals(): BigInt {
-    return this[2].toBigInt();
-  }
-
-  get notMotivatedGoals(): BigInt {
-    return this[3].toBigInt();
-  }
-}
-
-export class Goal__getMotivatorsResultValue0Struct extends ethereum.Tuple {
+export class Goal__getMessagesResultValue0Struct extends ethereum.Tuple {
   get addedTimestamp(): BigInt {
     return this[0].toBigInt();
   }
 
-  get accountAddress(): Address {
+  get authorAddress(): Address {
     return this[1].toAddress();
   }
 
-  get isAccepted(): boolean {
+  get isMotivating(): boolean {
     return this[2].toBoolean();
   }
 
+  get isSuperMotivating(): boolean {
+    return this[3].toBoolean();
+  }
+
   get extraDataURI(): string {
-    return this[3].toString();
+    return this[4].toString();
+  }
+}
+
+export class Goal__getMotivatorReputationResult {
+  value0: BigInt;
+  value1: BigInt;
+
+  constructor(value0: BigInt, value1: BigInt) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    return map;
+  }
+
+  getValue0(): BigInt {
+    return this.value0;
+  }
+
+  getValue1(): BigInt {
+    return this.value1;
+  }
+}
+
+export class Goal__getMotivatorsResultValue0Struct extends ethereum.Tuple {
+  get accountAddress(): Address {
+    return this[0].toAddress();
+  }
+
+  get motivations(): BigInt {
+    return this[1].toBigInt();
+  }
+
+  get superMotivations(): BigInt {
+    return this[2].toBigInt();
   }
 }
 
@@ -619,33 +646,40 @@ export class Goal__getParamsResultValue0Struct extends ethereum.Tuple {
     return this[6].toBoolean();
   }
 
-  get verificationRequirement(): string {
+  get extraDataURI(): string {
     return this[7].toString();
   }
 }
 
-export class Goal__getVerificationStatusResult {
-  value0: boolean;
-  value1: boolean;
+export class Goal__getReputationResult {
+  value0: BigInt;
+  value1: BigInt;
+  value2: BigInt;
 
-  constructor(value0: boolean, value1: boolean) {
+  constructor(value0: BigInt, value1: BigInt, value2: BigInt) {
     this.value0 = value0;
     this.value1 = value1;
+    this.value2 = value2;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
     let map = new TypedMap<string, ethereum.Value>();
-    map.set("value0", ethereum.Value.fromBoolean(this.value0));
-    map.set("value1", ethereum.Value.fromBoolean(this.value1));
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
+    map.set("value2", ethereum.Value.fromUnsignedBigInt(this.value2));
     return map;
   }
 
-  getIsAchieved(): boolean {
+  getValue0(): BigInt {
     return this.value0;
   }
 
-  getIsFailed(): boolean {
+  getValue1(): BigInt {
     return this.value1;
+  }
+
+  getValue2(): BigInt {
+    return this.value2;
   }
 }
 
@@ -671,39 +705,6 @@ export class Goal extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  getAccountReputation(
-    accountAddress: Address
-  ): Goal__getAccountReputationResultValue0Struct {
-    let result = super.call(
-      "getAccountReputation",
-      "getAccountReputation(address):((uint256,uint256,uint256,uint256))",
-      [ethereum.Value.fromAddress(accountAddress)]
-    );
-
-    return changetype<Goal__getAccountReputationResultValue0Struct>(
-      result[0].toTuple()
-    );
-  }
-
-  try_getAccountReputation(
-    accountAddress: Address
-  ): ethereum.CallResult<Goal__getAccountReputationResultValue0Struct> {
-    let result = super.tryCall(
-      "getAccountReputation",
-      "getAccountReputation(address):((uint256,uint256,uint256,uint256))",
-      [ethereum.Value.fromAddress(accountAddress)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      changetype<Goal__getAccountReputationResultValue0Struct>(
-        value[0].toTuple()
-      )
-    );
   }
 
   getApproved(tokenId: BigInt): Address {
@@ -750,25 +751,6 @@ export class Goal extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  getHubAddress(): Address {
-    let result = super.call("getHubAddress", "getHubAddress():(address)", []);
-
-    return result[0].toAddress();
-  }
-
-  try_getHubAddress(): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "getHubAddress",
-      "getHubAddress():(address)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
   getImageSVG(): string {
     let result = super.call("getImageSVG", "getImageSVG():(string)", []);
 
@@ -784,10 +766,95 @@ export class Goal extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  getKeeperAddress(): Address {
+    let result = super.call(
+      "getKeeperAddress",
+      "getKeeperAddress():(address)",
+      []
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_getKeeperAddress(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "getKeeperAddress",
+      "getKeeperAddress():(address)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  getMessages(tokenId: BigInt): Array<Goal__getMessagesResultValue0Struct> {
+    let result = super.call(
+      "getMessages",
+      "getMessages(uint256):((uint256,address,bool,bool,string)[])",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+
+    return result[0].toTupleArray<Goal__getMessagesResultValue0Struct>();
+  }
+
+  try_getMessages(
+    tokenId: BigInt
+  ): ethereum.CallResult<Array<Goal__getMessagesResultValue0Struct>> {
+    let result = super.tryCall(
+      "getMessages",
+      "getMessages(uint256):((uint256,address,bool,bool,string)[])",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTupleArray<Goal__getMessagesResultValue0Struct>()
+    );
+  }
+
+  getMotivatorReputation(
+    accountAddress: Address
+  ): Goal__getMotivatorReputationResult {
+    let result = super.call(
+      "getMotivatorReputation",
+      "getMotivatorReputation(address):(uint256,uint256)",
+      [ethereum.Value.fromAddress(accountAddress)]
+    );
+
+    return new Goal__getMotivatorReputationResult(
+      result[0].toBigInt(),
+      result[1].toBigInt()
+    );
+  }
+
+  try_getMotivatorReputation(
+    accountAddress: Address
+  ): ethereum.CallResult<Goal__getMotivatorReputationResult> {
+    let result = super.tryCall(
+      "getMotivatorReputation",
+      "getMotivatorReputation(address):(uint256,uint256)",
+      [ethereum.Value.fromAddress(accountAddress)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new Goal__getMotivatorReputationResult(
+        value[0].toBigInt(),
+        value[1].toBigInt()
+      )
+    );
+  }
+
   getMotivators(tokenId: BigInt): Array<Goal__getMotivatorsResultValue0Struct> {
     let result = super.call(
       "getMotivators",
-      "getMotivators(uint256):((uint256,address,bool,string)[])",
+      "getMotivators(uint256):((address,uint256,uint256)[])",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
 
@@ -799,7 +866,7 @@ export class Goal extends ethereum.SmartContract {
   ): ethereum.CallResult<Array<Goal__getMotivatorsResultValue0Struct>> {
     let result = super.tryCall(
       "getMotivators",
-      "getMotivators(uint256):((uint256,address,bool,string)[])",
+      "getMotivators(uint256):((address,uint256,uint256)[])",
       [ethereum.Value.fromUnsignedBigInt(tokenId)]
     );
     if (result.reverted) {
@@ -838,6 +905,64 @@ export class Goal extends ethereum.SmartContract {
     );
   }
 
+  getProfileAddress(): Address {
+    let result = super.call(
+      "getProfileAddress",
+      "getProfileAddress():(address)",
+      []
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_getProfileAddress(): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "getProfileAddress",
+      "getProfileAddress():(address)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  getReputation(accountAddress: Address): Goal__getReputationResult {
+    let result = super.call(
+      "getReputation",
+      "getReputation(address):(uint256,uint256,uint256)",
+      [ethereum.Value.fromAddress(accountAddress)]
+    );
+
+    return new Goal__getReputationResult(
+      result[0].toBigInt(),
+      result[1].toBigInt(),
+      result[2].toBigInt()
+    );
+  }
+
+  try_getReputation(
+    accountAddress: Address
+  ): ethereum.CallResult<Goal__getReputationResult> {
+    let result = super.tryCall(
+      "getReputation",
+      "getReputation(address):(uint256,uint256,uint256)",
+      [ethereum.Value.fromAddress(accountAddress)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new Goal__getReputationResult(
+        value[0].toBigInt(),
+        value[1].toBigInt(),
+        value[2].toBigInt()
+      )
+    );
+  }
+
   getUsageFeePercent(): BigInt {
     let result = super.call(
       "getUsageFeePercent",
@@ -859,103 +984,6 @@ export class Goal extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  getVerificationData(tokenId: BigInt, key: string): string {
-    let result = super.call(
-      "getVerificationData",
-      "getVerificationData(uint256,string):(string)",
-      [
-        ethereum.Value.fromUnsignedBigInt(tokenId),
-        ethereum.Value.fromString(key)
-      ]
-    );
-
-    return result[0].toString();
-  }
-
-  try_getVerificationData(
-    tokenId: BigInt,
-    key: string
-  ): ethereum.CallResult<string> {
-    let result = super.tryCall(
-      "getVerificationData",
-      "getVerificationData(uint256,string):(string)",
-      [
-        ethereum.Value.fromUnsignedBigInt(tokenId),
-        ethereum.Value.fromString(key)
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  getVerificationDataList(tokenId: BigInt, keys: Array<string>): Array<string> {
-    let result = super.call(
-      "getVerificationDataList",
-      "getVerificationDataList(uint256,string[]):(string[])",
-      [
-        ethereum.Value.fromUnsignedBigInt(tokenId),
-        ethereum.Value.fromStringArray(keys)
-      ]
-    );
-
-    return result[0].toStringArray();
-  }
-
-  try_getVerificationDataList(
-    tokenId: BigInt,
-    keys: Array<string>
-  ): ethereum.CallResult<Array<string>> {
-    let result = super.tryCall(
-      "getVerificationDataList",
-      "getVerificationDataList(uint256,string[]):(string[])",
-      [
-        ethereum.Value.fromUnsignedBigInt(tokenId),
-        ethereum.Value.fromStringArray(keys)
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toStringArray());
-  }
-
-  getVerificationStatus(tokenId: BigInt): Goal__getVerificationStatusResult {
-    let result = super.call(
-      "getVerificationStatus",
-      "getVerificationStatus(uint256):(bool,bool)",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)]
-    );
-
-    return new Goal__getVerificationStatusResult(
-      result[0].toBoolean(),
-      result[1].toBoolean()
-    );
-  }
-
-  try_getVerificationStatus(
-    tokenId: BigInt
-  ): ethereum.CallResult<Goal__getVerificationStatusResult> {
-    let result = super.tryCall(
-      "getVerificationStatus",
-      "getVerificationStatus(uint256):(bool,bool)",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      new Goal__getVerificationStatusResult(
-        value[0].toBoolean(),
-        value[1].toBoolean()
-      )
-    );
   }
 
   isApprovedForAll(owner: Address, operator: Address): boolean {
@@ -1106,116 +1134,6 @@ export class Goal extends ethereum.SmartContract {
   }
 }
 
-export class AcceptMotivatorCall extends ethereum.Call {
-  get inputs(): AcceptMotivatorCall__Inputs {
-    return new AcceptMotivatorCall__Inputs(this);
-  }
-
-  get outputs(): AcceptMotivatorCall__Outputs {
-    return new AcceptMotivatorCall__Outputs(this);
-  }
-}
-
-export class AcceptMotivatorCall__Inputs {
-  _call: AcceptMotivatorCall;
-
-  constructor(call: AcceptMotivatorCall) {
-    this._call = call;
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get motivatorAddress(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-}
-
-export class AcceptMotivatorCall__Outputs {
-  _call: AcceptMotivatorCall;
-
-  constructor(call: AcceptMotivatorCall) {
-    this._call = call;
-  }
-}
-
-export class AddVerificationDataCall extends ethereum.Call {
-  get inputs(): AddVerificationDataCall__Inputs {
-    return new AddVerificationDataCall__Inputs(this);
-  }
-
-  get outputs(): AddVerificationDataCall__Outputs {
-    return new AddVerificationDataCall__Outputs(this);
-  }
-}
-
-export class AddVerificationDataCall__Inputs {
-  _call: AddVerificationDataCall;
-
-  constructor(call: AddVerificationDataCall) {
-    this._call = call;
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get verificationDataKeys(): Array<string> {
-    return this._call.inputValues[1].value.toStringArray();
-  }
-
-  get verificationDataValues(): Array<string> {
-    return this._call.inputValues[2].value.toStringArray();
-  }
-}
-
-export class AddVerificationDataCall__Outputs {
-  _call: AddVerificationDataCall;
-
-  constructor(call: AddVerificationDataCall) {
-    this._call = call;
-  }
-}
-
-export class AddVerificationDataAndVerifyCall extends ethereum.Call {
-  get inputs(): AddVerificationDataAndVerifyCall__Inputs {
-    return new AddVerificationDataAndVerifyCall__Inputs(this);
-  }
-
-  get outputs(): AddVerificationDataAndVerifyCall__Outputs {
-    return new AddVerificationDataAndVerifyCall__Outputs(this);
-  }
-}
-
-export class AddVerificationDataAndVerifyCall__Inputs {
-  _call: AddVerificationDataAndVerifyCall;
-
-  constructor(call: AddVerificationDataAndVerifyCall) {
-    this._call = call;
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get verificationDataKeys(): Array<string> {
-    return this._call.inputValues[1].value.toStringArray();
-  }
-
-  get verificationDataValues(): Array<string> {
-    return this._call.inputValues[2].value.toStringArray();
-  }
-}
-
-export class AddVerificationDataAndVerifyCall__Outputs {
-  _call: AddVerificationDataAndVerifyCall;
-
-  constructor(call: AddVerificationDataAndVerifyCall) {
-    this._call = call;
-  }
-}
-
 export class ApproveCall extends ethereum.Call {
   get inputs(): ApproveCall__Inputs {
     return new ApproveCall__Inputs(this);
@@ -1250,40 +1168,6 @@ export class ApproveCall__Outputs {
   }
 }
 
-export class BecomeMotivatorCall extends ethereum.Call {
-  get inputs(): BecomeMotivatorCall__Inputs {
-    return new BecomeMotivatorCall__Inputs(this);
-  }
-
-  get outputs(): BecomeMotivatorCall__Outputs {
-    return new BecomeMotivatorCall__Outputs(this);
-  }
-}
-
-export class BecomeMotivatorCall__Inputs {
-  _call: BecomeMotivatorCall;
-
-  constructor(call: BecomeMotivatorCall) {
-    this._call = call;
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get extraDataURI(): string {
-    return this._call.inputValues[1].value.toString();
-  }
-}
-
-export class BecomeMotivatorCall__Outputs {
-  _call: BecomeMotivatorCall;
-
-  constructor(call: BecomeMotivatorCall) {
-    this._call = call;
-  }
-}
-
 export class CloseCall extends ethereum.Call {
   get inputs(): CloseCall__Inputs {
     return new CloseCall__Inputs(this);
@@ -1314,6 +1198,48 @@ export class CloseCall__Outputs {
   }
 }
 
+export class EvaluateMessageCall extends ethereum.Call {
+  get inputs(): EvaluateMessageCall__Inputs {
+    return new EvaluateMessageCall__Inputs(this);
+  }
+
+  get outputs(): EvaluateMessageCall__Outputs {
+    return new EvaluateMessageCall__Outputs(this);
+  }
+}
+
+export class EvaluateMessageCall__Inputs {
+  _call: EvaluateMessageCall;
+
+  constructor(call: EvaluateMessageCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get messageId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get isMotivating(): boolean {
+    return this._call.inputValues[2].value.toBoolean();
+  }
+
+  get isSuperMotivating(): boolean {
+    return this._call.inputValues[3].value.toBoolean();
+  }
+}
+
+export class EvaluateMessageCall__Outputs {
+  _call: EvaluateMessageCall;
+
+  constructor(call: EvaluateMessageCall) {
+    this._call = call;
+  }
+}
+
 export class InitializeCall extends ethereum.Call {
   get inputs(): InitializeCall__Inputs {
     return new InitializeCall__Inputs(this);
@@ -1331,12 +1257,16 @@ export class InitializeCall__Inputs {
     this._call = call;
   }
 
-  get hubAddress(): Address {
+  get profileAddress(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 
+  get keeperAddress(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+
   get usageFeePercent(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
+    return this._call.inputValues[2].value.toBigInt();
   }
 }
 
@@ -1404,6 +1334,40 @@ export class PostMessageCall__Outputs {
   _call: PostMessageCall;
 
   constructor(call: PostMessageCall) {
+    this._call = call;
+  }
+}
+
+export class PostProofCall extends ethereum.Call {
+  get inputs(): PostProofCall__Inputs {
+    return new PostProofCall__Inputs(this);
+  }
+
+  get outputs(): PostProofCall__Outputs {
+    return new PostProofCall__Outputs(this);
+  }
+}
+
+export class PostProofCall__Inputs {
+  _call: PostProofCall;
+
+  constructor(call: PostProofCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get extraDataURI(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class PostProofCall__Outputs {
+  _call: PostProofCall;
+
+  constructor(call: PostProofCall) {
     this._call = call;
   }
 }
@@ -1543,16 +1507,8 @@ export class SetCall__Inputs {
     return this._call.inputValues[2].value.toBigInt();
   }
 
-  get verificationRequirement(): string {
+  get extraDataURI(): string {
     return this._call.inputValues[3].value.toString();
-  }
-
-  get verificationDataKeys(): Array<string> {
-    return this._call.inputValues[4].value.toStringArray();
-  }
-
-  get verificationDataValues(): Array<string> {
-    return this._call.inputValues[5].value.toStringArray();
   }
 }
 
@@ -1602,36 +1558,6 @@ export class SetApprovalForAllCall__Outputs {
   }
 }
 
-export class SetHubAddressCall extends ethereum.Call {
-  get inputs(): SetHubAddressCall__Inputs {
-    return new SetHubAddressCall__Inputs(this);
-  }
-
-  get outputs(): SetHubAddressCall__Outputs {
-    return new SetHubAddressCall__Outputs(this);
-  }
-}
-
-export class SetHubAddressCall__Inputs {
-  _call: SetHubAddressCall;
-
-  constructor(call: SetHubAddressCall) {
-    this._call = call;
-  }
-
-  get hubAddress(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class SetHubAddressCall__Outputs {
-  _call: SetHubAddressCall;
-
-  constructor(call: SetHubAddressCall) {
-    this._call = call;
-  }
-}
-
 export class SetImageSVGCall extends ethereum.Call {
   get inputs(): SetImageSVGCall__Inputs {
     return new SetImageSVGCall__Inputs(this);
@@ -1658,6 +1584,66 @@ export class SetImageSVGCall__Outputs {
   _call: SetImageSVGCall;
 
   constructor(call: SetImageSVGCall) {
+    this._call = call;
+  }
+}
+
+export class SetKeeperAddressCall extends ethereum.Call {
+  get inputs(): SetKeeperAddressCall__Inputs {
+    return new SetKeeperAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetKeeperAddressCall__Outputs {
+    return new SetKeeperAddressCall__Outputs(this);
+  }
+}
+
+export class SetKeeperAddressCall__Inputs {
+  _call: SetKeeperAddressCall;
+
+  constructor(call: SetKeeperAddressCall) {
+    this._call = call;
+  }
+
+  get keeperAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetKeeperAddressCall__Outputs {
+  _call: SetKeeperAddressCall;
+
+  constructor(call: SetKeeperAddressCall) {
+    this._call = call;
+  }
+}
+
+export class SetProfileAddressCall extends ethereum.Call {
+  get inputs(): SetProfileAddressCall__Inputs {
+    return new SetProfileAddressCall__Inputs(this);
+  }
+
+  get outputs(): SetProfileAddressCall__Outputs {
+    return new SetProfileAddressCall__Outputs(this);
+  }
+}
+
+export class SetProfileAddressCall__Inputs {
+  _call: SetProfileAddressCall;
+
+  constructor(call: SetProfileAddressCall) {
+    this._call = call;
+  }
+
+  get profileAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetProfileAddressCall__Outputs {
+  _call: SetProfileAddressCall;
+
+  constructor(call: SetProfileAddressCall) {
     this._call = call;
   }
 }
@@ -1782,36 +1768,6 @@ export class UnpauseCall__Outputs {
   _call: UnpauseCall;
 
   constructor(call: UnpauseCall) {
-    this._call = call;
-  }
-}
-
-export class VerifyCall extends ethereum.Call {
-  get inputs(): VerifyCall__Inputs {
-    return new VerifyCall__Inputs(this);
-  }
-
-  get outputs(): VerifyCall__Outputs {
-    return new VerifyCall__Outputs(this);
-  }
-}
-
-export class VerifyCall__Inputs {
-  _call: VerifyCall;
-
-  constructor(call: VerifyCall) {
-    this._call = call;
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-}
-
-export class VerifyCall__Outputs {
-  _call: VerifyCall;
-
-  constructor(call: VerifyCall) {
     this._call = call;
   }
 }

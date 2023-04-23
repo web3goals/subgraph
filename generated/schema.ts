@@ -69,6 +69,15 @@ export class Account extends Entity {
     this.set("profileUri", Value.fromString(value));
   }
 
+  get goals(): BigInt {
+    let value = this.get("goals");
+    return value!.toBigInt();
+  }
+
+  set goals(value: BigInt) {
+    this.set("goals", Value.fromBigInt(value));
+  }
+
   get achievedGoals(): BigInt {
     let value = this.get("achievedGoals");
     return value!.toBigInt();
@@ -87,22 +96,22 @@ export class Account extends Entity {
     this.set("failedGoals", Value.fromBigInt(value));
   }
 
-  get motivatedGoals(): BigInt {
-    let value = this.get("motivatedGoals");
+  get motivations(): BigInt {
+    let value = this.get("motivations");
     return value!.toBigInt();
   }
 
-  set motivatedGoals(value: BigInt) {
-    this.set("motivatedGoals", Value.fromBigInt(value));
+  set motivations(value: BigInt) {
+    this.set("motivations", Value.fromBigInt(value));
   }
 
-  get notMotivatedGoals(): BigInt {
-    let value = this.get("notMotivatedGoals");
+  get superMotivations(): BigInt {
+    let value = this.get("superMotivations");
     return value!.toBigInt();
   }
 
-  set notMotivatedGoals(value: BigInt) {
-    this.set("notMotivatedGoals", Value.fromBigInt(value));
+  set superMotivations(value: BigInt) {
+    this.set("superMotivations", Value.fromBigInt(value));
   }
 }
 
@@ -200,62 +209,26 @@ export class Goal extends Entity {
     this.set("isAchieved", Value.fromBoolean(value));
   }
 
-  get verificationRequirement(): string {
-    let value = this.get("verificationRequirement");
+  get extraDataURI(): string {
+    let value = this.get("extraDataURI");
     return value!.toString();
   }
 
-  set verificationRequirement(value: string) {
-    this.set("verificationRequirement", Value.fromString(value));
+  set extraDataURI(value: string) {
+    this.set("extraDataURI", Value.fromString(value));
   }
 
-  get motivators(): Array<string> {
-    let value = this.get("motivators");
+  get messages(): Array<string> {
+    let value = this.get("messages");
     return value!.toStringArray();
   }
 
-  set motivators(value: Array<string>) {
-    this.set("motivators", Value.fromStringArray(value));
-  }
-
-  get motivatorAddresses(): Array<string> {
-    let value = this.get("motivatorAddresses");
-    return value!.toStringArray();
-  }
-
-  set motivatorAddresses(value: Array<string>) {
-    this.set("motivatorAddresses", Value.fromStringArray(value));
-  }
-
-  get motivatorsNumber(): i32 {
-    let value = this.get("motivatorsNumber");
-    return value!.toI32();
-  }
-
-  set motivatorsNumber(value: i32) {
-    this.set("motivatorsNumber", Value.fromI32(value));
-  }
-
-  get acceptedMotivatorAddresses(): Array<string> {
-    let value = this.get("acceptedMotivatorAddresses");
-    return value!.toStringArray();
-  }
-
-  set acceptedMotivatorAddresses(value: Array<string>) {
-    this.set("acceptedMotivatorAddresses", Value.fromStringArray(value));
-  }
-
-  get steps(): Array<string> {
-    let value = this.get("steps");
-    return value!.toStringArray();
-  }
-
-  set steps(value: Array<string>) {
-    this.set("steps", Value.fromStringArray(value));
+  set messages(value: Array<string>) {
+    this.set("messages", Value.fromStringArray(value));
   }
 }
 
-export class GoalMotivator extends Entity {
+export class GoalMessage extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -263,18 +236,18 @@ export class GoalMotivator extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save GoalMotivator entity without an ID");
+    assert(id != null, "Cannot save GoalMessage entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type GoalMotivator must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type GoalMessage must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("GoalMotivator", id.toString(), this);
+      store.set("GoalMessage", id.toString(), this);
     }
   }
 
-  static load(id: string): GoalMotivator | null {
-    return changetype<GoalMotivator | null>(store.get("GoalMotivator", id));
+  static load(id: string): GoalMessage | null {
+    return changetype<GoalMessage | null>(store.get("GoalMessage", id));
   }
 
   get id(): string {
@@ -304,74 +277,6 @@ export class GoalMotivator extends Entity {
     this.set("addedTimestamp", Value.fromBigInt(value));
   }
 
-  get accountAddress(): string {
-    let value = this.get("accountAddress");
-    return value!.toString();
-  }
-
-  set accountAddress(value: string) {
-    this.set("accountAddress", Value.fromString(value));
-  }
-
-  get isAccepted(): boolean {
-    let value = this.get("isAccepted");
-    return value!.toBoolean();
-  }
-
-  set isAccepted(value: boolean) {
-    this.set("isAccepted", Value.fromBoolean(value));
-  }
-}
-
-export class GoalStep extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save GoalStep entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type GoalStep must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("GoalStep", id.toString(), this);
-    }
-  }
-
-  static load(id: string): GoalStep | null {
-    return changetype<GoalStep | null>(store.get("GoalStep", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get goal(): string {
-    let value = this.get("goal");
-    return value!.toString();
-  }
-
-  set goal(value: string) {
-    this.set("goal", Value.fromString(value));
-  }
-
-  get createdTimestamp(): BigInt {
-    let value = this.get("createdTimestamp");
-    return value!.toBigInt();
-  }
-
-  set createdTimestamp(value: BigInt) {
-    this.set("createdTimestamp", Value.fromBigInt(value));
-  }
-
   get authorAddress(): string {
     let value = this.get("authorAddress");
     return value!.toString();
@@ -390,13 +295,22 @@ export class GoalStep extends Entity {
     this.set("type", Value.fromString(value));
   }
 
-  get extraData(): string {
-    let value = this.get("extraData");
-    return value!.toString();
+  get isMotivating(): boolean {
+    let value = this.get("isMotivating");
+    return value!.toBoolean();
   }
 
-  set extraData(value: string) {
-    this.set("extraData", Value.fromString(value));
+  set isMotivating(value: boolean) {
+    this.set("isMotivating", Value.fromBoolean(value));
+  }
+
+  get isSuperMotivating(): boolean {
+    let value = this.get("isSuperMotivating");
+    return value!.toBoolean();
+  }
+
+  set isSuperMotivating(value: boolean) {
+    this.set("isSuperMotivating", Value.fromBoolean(value));
   }
 
   get extraDataUri(): string {

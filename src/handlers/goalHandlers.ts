@@ -1,32 +1,21 @@
 import {
-  AccountReputationSet,
   ClosedAsAchieved,
   ClosedAsFailed,
+  MessageEvaluated,
   MessagePosted,
-  MotivatorAccepted,
-  MotivatorAdded,
+  ProofPosted,
   Set,
   Transfer,
-  VerificationDataSet,
 } from "../../generated/Goal/Goal";
-import { Goal } from "../../generated/schema";
+import { Goal, GoalMessage } from "../../generated/schema";
 import {
-  GOAL_STEP_TYPE_GOAL_CLOSED_AS_ACHIEVED,
-  GOAL_STEP_TYPE_GOAL_CLOSED_AS_FAILED,
-  GOAL_STEP_TYPE_GOAL_SET,
-  GOAL_STEP_TYPE_MESSAGE_POSTED,
-  GOAL_STEP_TYPE_MOTIVATOR_ACCEPTED,
-  GOAL_STEP_TYPE_MOTIVATOR_ADDED,
-  GOAL_STEP_TYPE_VERIFICATION_DATA_SET,
+  GOAL_MESSAGE_TYPE_GOAL_CLOSED_AS_ACHIEVED,
+  GOAL_MESSAGE_TYPE_GOAL_CLOSED_AS_FAILED,
+  GOAL_MESSAGE_TYPE_GOAL_SET,
+  GOAL_MESSAGE_TYPE_MESSAGE_POSTED,
+  GOAL_MESSAGE_TYPE_PROOF_POSTED,
 } from "../constants";
-import {
-  createStep,
-  getGoalWithAddedAcceptedMotivator,
-  getGoalWithAddedMotivator,
-  loadOrCreateAccount,
-  loadOrCreateGoal,
-  loadOrCreateGoalMotivator,
-} from "../utils";
+import { createMessage, loadOrCreateGoal } from "../utils";
 
 /**
  * Handle a tranfer event to create a goal with default values.
@@ -53,78 +42,39 @@ export function handleSet(event: Set): void {
   goal.deadlineTimestamp = event.params.params.deadlineTimestamp;
   goal.isClosed = event.params.params.isClosed;
   goal.isAchieved = event.params.params.isAchieved;
-  goal.verificationRequirement = event.params.params.verificationRequirement;
+  goal.extraDataURI = event.params.params.extraDataURI;
   goal.save();
-  // Save step
-  createStep(event, goal, GOAL_STEP_TYPE_GOAL_SET, "", "").save();
-}
-
-/**
- * Handle a motivator added event to add motivator.
- */
-export function handleMotivatorAdded(event: MotivatorAdded): void {
-  // Load goal
-  let goal = Goal.load(event.params.tokenId.toString());
-  if (!goal) {
-    return;
-  }
-  // Get motivator
-  let motivator = loadOrCreateGoalMotivator(
-    goal.id,
-    event.params.motivatorAccountAddress.toHexString()
-  );
-  // Update goal motivator
-  motivator.addedTimestamp = event.params.motivator.addedTimestamp;
-  motivator.accountAddress = event.params.motivator.accountAddress.toHexString();
-  motivator.isAccepted = event.params.motivator.isAccepted;
-  motivator.save();
-  // Add motivator to goal list with motivator addresses
-  goal = getGoalWithAddedMotivator(goal, motivator.accountAddress);
-  goal.save();
-  // Save step
-  createStep(
+  // Create message
+  createMessage(
     event,
     goal,
-    GOAL_STEP_TYPE_MOTIVATOR_ADDED,
-    "",
-    event.params.motivator.extraDataURI
-  ).save();
-}
-
-/**
- * Handle a motivator added event to update motivator.
- */
-export function handleMotivatorAccepted(event: MotivatorAccepted): void {
-  // Load goal
-  let goal = Goal.load(event.params.tokenId.toString());
-  if (!goal) {
-    return;
-  }
-  // Get motivator
-  let motivator = loadOrCreateGoalMotivator(
-    goal.id,
-    event.params.motivatorAccountAddress.toHexString()
-  );
-  // Update goal motivator
-  motivator.addedTimestamp = event.params.motivator.addedTimestamp;
-  motivator.accountAddress = event.params.motivator.accountAddress.toHexString();
-  motivator.isAccepted = event.params.motivator.isAccepted;
-  motivator.save();
-  // Add motivator to goal list with accepted motivator addresses
-  goal = getGoalWithAddedAcceptedMotivator(goal, motivator.accountAddress);
-  goal.save();
-  // Save step
-  createStep(
-    event,
-    goal,
-    GOAL_STEP_TYPE_MOTIVATOR_ACCEPTED,
-    "MOTIVATOR_ACCOUNT_ADDRESS=" + motivator.accountAddress,
+    event.transaction.hash.toHexString(),
+    GOAL_MESSAGE_TYPE_GOAL_SET,
     ""
   ).save();
 }
 
 /**
- * Handle a message posted event to save step.
+ * Handle a proof posted event to create message.
+ */
+export function handleProofPosted(event: ProofPosted): void {
+  // Load goal
+  let goal = Goal.load(event.params.tokenId.toString());
+  if (!goal) {
+    return;
+  }
+  // Create message
+  createMessage(
+    event,
+    goal,
+    event.transaction.hash.toHexString(),
+    GOAL_MESSAGE_TYPE_PROOF_POSTED,
+    event.params.proof.extraDataURI
+  ).save();
+}
+
+/**
+ * Handle a message posted event to create message.
  */
 export function handleMessagePosted(event: MessagePosted): void {
   // Load goal
@@ -132,33 +82,36 @@ export function handleMessagePosted(event: MessagePosted): void {
   if (!goal) {
     return;
   }
-  // Save step
-  createStep(
+  // Create message
+  createMessage(
     event,
     goal,
-    GOAL_STEP_TYPE_MESSAGE_POSTED,
-    "",
+    event.params.messageId.toString(),
+    GOAL_MESSAGE_TYPE_MESSAGE_POSTED,
     event.params.message.extraDataURI
   ).save();
 }
 
 /**
- * Handle a verification data set event to save step.
+ * Handle a message evaluated event to update message.
  */
-export function handleVerificationDataSet(event: VerificationDataSet): void {
+export function handleMessageEvaluated(event: MessageEvaluated): void {
   // Load goal
   let goal = Goal.load(event.params.tokenId.toString());
   if (!goal) {
     return;
   }
-  // Save step
-  createStep(
-    event,
-    goal,
-    GOAL_STEP_TYPE_VERIFICATION_DATA_SET,
-    event.params.key + "=" + event.params.value,
-    ""
-  ).save();
+  // Load message
+  let message = GoalMessage.load(
+    goal.id + "_" + event.params.messageId.toString()
+  );
+  if (!message) {
+    return;
+  }
+  // Update message
+  message.isMotivating = event.params.message.isMotivating;
+  message.isSuperMotivating = event.params.message.isSuperMotivating;
+  message.save();
 }
 
 /**
@@ -174,12 +127,12 @@ export function handleClosedAsAchieved(event: ClosedAsAchieved): void {
   goal.isClosed = event.params.params.isClosed;
   goal.isAchieved = event.params.params.isAchieved;
   goal.save();
-  // Save step
-  createStep(
+  // Create message
+  createMessage(
     event,
     goal,
-    GOAL_STEP_TYPE_GOAL_CLOSED_AS_ACHIEVED,
-    "",
+    event.transaction.hash.toHexString(),
+    GOAL_MESSAGE_TYPE_GOAL_CLOSED_AS_ACHIEVED,
     ""
   ).save();
 }
@@ -197,18 +150,12 @@ export function handleClosedAsFailed(event: ClosedAsFailed): void {
   goal.isClosed = event.params.params.isClosed;
   goal.isAchieved = event.params.params.isAchieved;
   goal.save();
-  // Save step
-  createStep(event, goal, GOAL_STEP_TYPE_GOAL_CLOSED_AS_FAILED, "", "").save();
-}
-
-/**
- * Handle a account reputation set event to update account reputation.
- */
-export function handleAccountReputationSet(event: AccountReputationSet): void {
-  let account = loadOrCreateAccount(event.params.accountAddress.toHexString());
-  account.achievedGoals = event.params.accountReputation.achievedGoals;
-  account.failedGoals = event.params.accountReputation.failedGoals;
-  account.motivatedGoals = event.params.accountReputation.motivatedGoals;
-  account.notMotivatedGoals = event.params.accountReputation.notMotivatedGoals;
-  account.save();
+  // Create message
+  createMessage(
+    event,
+    goal,
+    event.transaction.hash.toHexString(),
+    GOAL_MESSAGE_TYPE_GOAL_CLOSED_AS_FAILED,
+    ""
+  ).save();
 }

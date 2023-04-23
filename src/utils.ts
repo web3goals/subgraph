@@ -1,5 +1,24 @@
 import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
-import { Account, Goal, GoalMotivator, GoalStep } from "../generated/schema";
+import { Account, Goal, GoalMessage } from "../generated/schema";
+
+export function loadOrCreateAccount(accountAddress: string): Account {
+  let accountId = accountAddress;
+  let account = Account.load(accountId);
+  if (!account) {
+    account = new Account(accountId);
+    // Defaults for profile
+    account.profileId = "";
+    account.profileCreatedTimestamp = BigInt.zero();
+    account.profileUri = "";
+    // Defaults for reputation
+    account.goals = BigInt.zero();
+    account.achievedGoals = BigInt.zero();
+    account.failedGoals = BigInt.zero();
+    account.motivations = BigInt.zero();
+    account.superMotivations = BigInt.zero();
+  }
+  return account;
+}
 
 export function loadOrCreateGoal(tokenId: string): Goal {
   let goalId = tokenId;
@@ -14,100 +33,26 @@ export function loadOrCreateGoal(tokenId: string): Goal {
     goal.deadlineTimestamp = BigInt.zero();
     goal.isClosed = false;
     goal.isAchieved = false;
-    goal.verificationRequirement = "";
-    // Defaults for motivators
-    goal.motivatorAddresses = new Array<string>();
-    goal.motivatorsNumber = 0;
-    goal.acceptedMotivatorAddresses = new Array<string>();
+    goal.extraDataURI = "";
   }
   return goal;
 }
 
-export function loadOrCreateGoalMotivator(
-  goalId: string,
-  goalMotivatorAccountAddress: string
-): GoalMotivator {
-  let motivatorId = goalId + "_" + goalMotivatorAccountAddress;
-  let motivator = GoalMotivator.load(motivatorId);
-  if (!motivator) {
-    motivator = new GoalMotivator(motivatorId);
-    motivator.goal = goalId;
-    motivator.addedTimestamp = BigInt.zero();
-    motivator.accountAddress = Address.zero().toHexString();
-    motivator.isAccepted = false;
-  }
-  return motivator;
-}
-
-export function loadOrCreateAccount(accountAddress: string): Account {
-  let accountId = accountAddress;
-  let account = Account.load(accountId);
-  if (!account) {
-    account = new Account(accountId);
-    // Defaults for profile
-    account.profileId = "";
-    account.profileCreatedTimestamp = BigInt.zero();
-    account.profileUri = "";
-    // Defaults for reputation
-    account.achievedGoals = BigInt.zero();
-    account.failedGoals = BigInt.zero();
-    account.motivatedGoals = BigInt.zero();
-    account.notMotivatedGoals = BigInt.zero();
-  }
-  return account;
-}
-
-export function getGoalWithAddedMotivator(
-  goal: Goal,
-  motivatorAccountAddress: string
-): Goal {
-  // Check existing motivator addresses
-  for (let i = 0; i < goal.motivatorAddresses.length; i++) {
-    let motivatorAddress = goal.motivatorAddresses[i];
-    if (motivatorAddress == motivatorAccountAddress) {
-      return goal;
-    }
-  }
-  // Add motivator address
-  let newMotivatorAddresses = goal.motivatorAddresses;
-  newMotivatorAddresses.push(motivatorAccountAddress);
-  goal.motivatorAddresses = newMotivatorAddresses;
-  goal.motivatorsNumber = goal.motivatorsNumber + 1;
-  return goal;
-}
-
-export function getGoalWithAddedAcceptedMotivator(
-  goal: Goal,
-  motivatorAccountAddress: string
-): Goal {
-  // Check existing motivator addresses
-  for (let i = 0; i < goal.acceptedMotivatorAddresses.length; i++) {
-    let motivatorAddress = goal.acceptedMotivatorAddresses[i];
-    if (motivatorAddress == motivatorAccountAddress) {
-      return goal;
-    }
-  }
-  // Add motivator address
-  let newAcceptedMotivatorAddresses = goal.acceptedMotivatorAddresses;
-  newAcceptedMotivatorAddresses.push(motivatorAccountAddress);
-  goal.acceptedMotivatorAddresses = newAcceptedMotivatorAddresses;
-  return goal;
-}
-
-export function createStep(
+export function createMessage(
   event: ethereum.Event,
   goal: Goal,
+  messageId: string,
   type: string,
-  extraData: string,
   extraDataUri: string
-): GoalStep {
-  let id = goal.id + "_" + event.transaction.hash.toHexString();
-  let step = new GoalStep(id);
-  step.goal = goal.id;
-  step.createdTimestamp = event.block.timestamp;
-  step.type = type;
-  step.authorAddress = event.transaction.from.toHexString();
-  step.extraData = extraData;
-  step.extraDataUri = extraDataUri;
-  return step;
+): GoalMessage {
+  let id = goal.id + "_" + messageId;
+  let message = new GoalMessage(id);
+  message.goal = goal.id;
+  message.addedTimestamp = event.block.timestamp;
+  message.type = type;
+  message.authorAddress = event.transaction.from.toHexString();
+  message.isMotivating = false;
+  message.isSuperMotivating = false;
+  message.extraDataUri = extraDataUri;
+  return message;
 }
