@@ -33,6 +33,7 @@ type Goal @entity {
 
 type GoalMessage @entity {
   id: ID! # combination of goal id and message id (goal contract message id or event transaction hash)
+  messageId: String! # (goal contract message id or event transaction hash)
   goal: Goal!
   addedTimestamp: BigInt!
   authorAddress: String!

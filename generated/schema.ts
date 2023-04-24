@@ -286,6 +286,15 @@ export class GoalMessage extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get messageId(): string {
+    let value = this.get("messageId");
+    return value!.toString();
+  }
+
+  set messageId(value: string) {
+    this.set("messageId", Value.fromString(value));
+  }
+
   get goal(): string {
     let value = this.get("goal");
     return value!.toString();

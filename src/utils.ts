@@ -52,6 +52,7 @@ export function createMessage(
 ): GoalMessage {
   let id = goal.id + "_" + messageId;
   let message = new GoalMessage(id);
+  message.messageId = messageId;
   message.goal = goal.id;
   message.addedTimestamp = event.block.timestamp;
   message.type = type;
