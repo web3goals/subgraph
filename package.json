@@ -1,6 +1,6 @@
 {
   "name": "web3goals-subgraph",
-  "version": "0.1.1",
+  "version": "0.2",
   "license": "UNLICENSED",
   "scripts": {
     "codegen-mumbai": "graph codegen subgraph-mumbai.yaml",
