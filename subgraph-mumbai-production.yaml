@@ -3,75 +3,6 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: Goal
-    network: mumbai
-    source:
-      address: "0x93d3a8C97E4F08fA709AaAfB65AbEDCcC00a2C83"
-      abi: Goal
-      startBlock: 33433697
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - Transfer
-        - Set
-        - MotivatorAdded
-        - MotivatorAccepted
-        - MessagePosted
-        - ClosedAsAchieved
-        - ClosedAsFailed
-        - AccountReputationSet
-      abis:
-        - name: Goal
-          file: ./abis/Goal.json
-      eventHandlers:
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
-        - event: Set(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
-          handler: handleSet
-        - event: MotivatorAdded(indexed uint256,indexed address,(uint256,address,bool,string))
-          handler: handleMotivatorAdded
-        - event: MotivatorAccepted(indexed uint256,indexed address,(uint256,address,bool,string))
-          handler: handleMotivatorAccepted
-        - event: MessagePosted(indexed uint256,(uint256,address,string))
-          handler: handleMessagePosted
-        - event: VerificationDataSet(indexed uint256,string,string)
-          handler: handleVerificationDataSet
-        - event: ClosedAsAchieved(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
-          handler: handleClosedAsAchieved
-        - event: ClosedAsFailed(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
-          handler: handleClosedAsFailed
-        - event: AccountReputationSet(indexed address,(uint256,uint256,uint256,uint256))
-          handler: handleAccountReputationSet
-      file: ./src/handlers/goalHandlers.ts
-  - kind: ethereum
-    name: TrustingVerifier
-    network: mumbai
-    source:
-      address: "0xC74BA44fa161FAf37aDa76517bDF8a61119E98bb"
-      abi: TrustingVerifier
-      startBlock: 33433692
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - GoalVerifiedAsAchieved
-        - GoalVerifiedAsFailed
-        - GoalVerifiedAsNotAchievedYet
-      abis:
-        - name: TrustingVerifier
-          file: ./abis/TrustingVerifier.json
-      eventHandlers:
-        - event: GoalVerifiedAsAchieved(indexed uint256)
-          handler: handleGoalVerifiedAsAchieved
-        - event: GoalVerifiedAsFailed(indexed uint256)
-          handler: handleGoalVerifiedAsFailed
-        - event: GoalVerifiedAsNotAchievedYet(indexed uint256)
-          handler: handleGoalVerifiedAsNotAchievedYet
-      file: ./src/handlers/trustingVerifierHandlers.ts
-  - kind: ethereum
     name: Profile
     network: mumbai
     source:
@@ -94,3 +25,44 @@ dataSources:
         - event: URISet(indexed uint256,string)
           handler: handleUriSet
       file: ./src/handlers/profileHandlers.ts
+  - kind: ethereum
+    name: Goal
+    network: mumbai
+    source:
+      address: "0xd45d57d50fa83A33aEC45B7cb7ED6d990B7BDb67"
+      abi: Goal
+      startBlock: 34773756
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Transfer
+        - Set
+        - ProofPosted
+        - MotivatorAdded
+        - MessagePosted
+        - MessageEvaluated
+        - ClosedAsAchieved
+        - ClosedAsFailed
+      abis:
+        - name: Goal
+          file: ./abis/Goal.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        - event: Set(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
+          handler: handleSet
+        - event: ProofPosted(indexed uint256,(uint256,string))
+          handler: handleProofPosted
+        - event: MotivatorAdded(indexed uint256,indexed address,(address,uint256,uint256))
+          handler: handleMotivatorAdded
+        - event: MessagePosted(indexed uint256,indexed uint256,(uint256,address,bool,bool,string))
+          handler: handleMessagePosted
+        - event: MessageEvaluated(indexed uint256,indexed uint256,(uint256,address,bool,bool,string))
+          handler: handleMessageEvaluated
+        - event: ClosedAsAchieved(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
+          handler: handleClosedAsAchieved
+        - event: ClosedAsFailed(indexed uint256,(uint256,string,address,uint256,uint256,bool,bool,string))
+          handler: handleClosedAsFailed
+      file: ./src/handlers/goalHandlers.ts
