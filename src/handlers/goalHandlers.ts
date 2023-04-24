@@ -18,7 +18,8 @@ import {
 } from "../constants";
 import {
   createMessage,
-  getAccountWithUpdatedReputation,
+  getUpdatedAccount,
+  getUpdatedGoal,
   loadOrCreateGoal,
 } from "../utils";
 
@@ -57,11 +58,10 @@ export function handleSet(event: Set): void {
     GOAL_MESSAGE_TYPE_GOAL_SET,
     ""
   ).save();
-  // Update goal messages number
-  goal.messagesNumber = goal.messagesNumber + 1;
-  goal.save();
   // Update account reputation
-  getAccountWithUpdatedReputation(goal.authorAddress, 1, 0, 0, 0, 0).save();
+  getUpdatedAccount(goal.authorAddress, 1, 0, 0, 0, 0).save();
+  // Update goal
+  getUpdatedGoal(goal.id, null, 0, 1).save();
 }
 
 /**
@@ -81,9 +81,8 @@ export function handleProofPosted(event: ProofPosted): void {
     GOAL_MESSAGE_TYPE_PROOF_POSTED,
     event.params.proof.extraDataURI
   ).save();
-  // Update goal messages number
-  goal.messagesNumber = goal.messagesNumber + 1;
-  goal.save();
+  // Update goal
+  getUpdatedGoal(goal.id, null, 0, 1).save();
 }
 
 /**
@@ -96,13 +95,12 @@ export function handleMotivatorAdded(event: MotivatorAdded): void {
     return;
   }
   // Update goal
-  let newMotivatorAddresses = goal.motivatorAddresses;
-  newMotivatorAddresses.push(
-    event.params.motivatorAccountAddress.toHexString()
-  );
-  goal.motivatorAddresses = newMotivatorAddresses;
-  goal.motivatorsNumber = goal.motivatorsNumber + 1;
-  goal.save();
+  getUpdatedGoal(
+    goal.id,
+    event.params.motivatorAccountAddress.toHexString(),
+    1,
+    0
+  ).save();
 }
 
 /**
@@ -122,9 +120,8 @@ export function handleMessagePosted(event: MessagePosted): void {
     GOAL_MESSAGE_TYPE_MESSAGE_POSTED,
     event.params.message.extraDataURI
   ).save();
-  // Update goal messages number
-  goal.messagesNumber = goal.messagesNumber + 1;
-  goal.save();
+  // Update goal
+  getUpdatedGoal(goal.id, null, 0, 1).save();
 }
 
 /**
@@ -148,7 +145,7 @@ export function handleMessageEvaluated(event: MessageEvaluated): void {
   message.isSuperMotivating = event.params.message.isSuperMotivating;
   message.save();
   // Update account reputation
-  getAccountWithUpdatedReputation(
+  getUpdatedAccount(
     message.authorAddress,
     0,
     0,
@@ -179,11 +176,10 @@ export function handleClosedAsAchieved(event: ClosedAsAchieved): void {
     GOAL_MESSAGE_TYPE_GOAL_CLOSED_AS_ACHIEVED,
     ""
   ).save();
-  // Update goal messages number
-  goal.messagesNumber = goal.messagesNumber + 1;
-  goal.save();
   // Update account reputation
-  getAccountWithUpdatedReputation(goal.authorAddress, 0, 1, 0, 0, 0).save();
+  getUpdatedAccount(goal.authorAddress, 0, 1, 0, 0, 0).save();
+  // Update goal
+  getUpdatedGoal(goal.id, null, 0, 1).save();
 }
 
 /**
@@ -207,9 +203,8 @@ export function handleClosedAsFailed(event: ClosedAsFailed): void {
     GOAL_MESSAGE_TYPE_GOAL_CLOSED_AS_FAILED,
     ""
   ).save();
-  // Update goal messages number
-  goal.messagesNumber = goal.messagesNumber + 1;
-  goal.save();
   // Update account reputation
-  getAccountWithUpdatedReputation(goal.authorAddress, 0, 0, 1, 0, 0).save();
+  getUpdatedAccount(goal.authorAddress, 0, 0, 1, 0, 0).save();
+  // Update goal
+  getUpdatedGoal(goal.id, null, 0, 1).save();
 }

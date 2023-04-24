@@ -62,7 +62,7 @@ export function createMessage(
   return message;
 }
 
-export function getAccountWithUpdatedReputation(
+export function getUpdatedAccount(
   accountAddress: string,
   additionalGoals: i32,
   additionalAchievedGoals: i32,
@@ -77,4 +77,21 @@ export function getAccountWithUpdatedReputation(
   account.motivations += additionalMotivations;
   account.superMotivations += additionalSuperMotivations;
   return account;
+}
+
+export function getUpdatedGoal(
+  tokenId: string,
+  additionalMotivaterAddress: string | null,
+  additionalMotivatorsNumber: i32,
+  additionalMessagesNumber: i32
+): Goal {
+  let goal = loadOrCreateGoal(tokenId);
+  if (additionalMotivaterAddress) {
+    let newMotivatorAddresses = goal.motivatorAddresses;
+    newMotivatorAddresses.push(additionalMotivaterAddress);
+    goal.motivatorAddresses = newMotivatorAddresses;
+  }
+  goal.motivatorsNumber += additionalMotivatorsNumber;
+  goal.messagesNumber += additionalMessagesNumber;
+  return goal;
 }
