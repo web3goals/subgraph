@@ -5,11 +5,11 @@ type Account @entity {
   profileCreatedTimestamp: BigInt!
   profileUri: String!
   # Reputation
-  goals: BigInt!
-  achievedGoals: BigInt!
-  failedGoals: BigInt!
-  motivations: BigInt!
-  superMotivations: BigInt!
+  goals: Int!
+  achievedGoals: Int!
+  failedGoals: Int!
+  motivations: Int!
+  superMotivations: Int!
 }
 
 type Goal @entity {

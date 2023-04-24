@@ -11,11 +11,11 @@ export function loadOrCreateAccount(accountAddress: string): Account {
     account.profileCreatedTimestamp = BigInt.zero();
     account.profileUri = "";
     // Defaults for reputation
-    account.goals = BigInt.zero();
-    account.achievedGoals = BigInt.zero();
-    account.failedGoals = BigInt.zero();
-    account.motivations = BigInt.zero();
-    account.superMotivations = BigInt.zero();
+    account.goals = 0;
+    account.achievedGoals = 0;
+    account.failedGoals = 0;
+    account.motivations = 0;
+    account.superMotivations = 0;
   }
   return account;
 }
@@ -60,4 +60,21 @@ export function createMessage(
   message.isSuperMotivating = false;
   message.extraDataUri = extraDataUri;
   return message;
+}
+
+export function getAccountWithUpdatedReputation(
+  accountAddress: string,
+  additionalGoals: i32,
+  additionalAchievedGoals: i32,
+  additionalFailedGoals: i32,
+  additionalMotivations: i32,
+  additionalSuperMotivations: i32
+): Account {
+  let account = loadOrCreateAccount(accountAddress);
+  account.goals += additionalGoals;
+  account.achievedGoals += additionalAchievedGoals;
+  account.failedGoals += additionalFailedGoals;
+  account.motivations += additionalMotivations;
+  account.superMotivations += additionalSuperMotivations;
+  return account;
 }

@@ -69,49 +69,49 @@ export class Account extends Entity {
     this.set("profileUri", Value.fromString(value));
   }
 
-  get goals(): BigInt {
+  get goals(): i32 {
     let value = this.get("goals");
-    return value!.toBigInt();
+    return value!.toI32();
   }
 
-  set goals(value: BigInt) {
-    this.set("goals", Value.fromBigInt(value));
+  set goals(value: i32) {
+    this.set("goals", Value.fromI32(value));
   }
 
-  get achievedGoals(): BigInt {
+  get achievedGoals(): i32 {
     let value = this.get("achievedGoals");
-    return value!.toBigInt();
+    return value!.toI32();
   }
 
-  set achievedGoals(value: BigInt) {
-    this.set("achievedGoals", Value.fromBigInt(value));
+  set achievedGoals(value: i32) {
+    this.set("achievedGoals", Value.fromI32(value));
   }
 
-  get failedGoals(): BigInt {
+  get failedGoals(): i32 {
     let value = this.get("failedGoals");
-    return value!.toBigInt();
+    return value!.toI32();
   }
 
-  set failedGoals(value: BigInt) {
-    this.set("failedGoals", Value.fromBigInt(value));
+  set failedGoals(value: i32) {
+    this.set("failedGoals", Value.fromI32(value));
   }
 
-  get motivations(): BigInt {
+  get motivations(): i32 {
     let value = this.get("motivations");
-    return value!.toBigInt();
+    return value!.toI32();
   }
 
-  set motivations(value: BigInt) {
-    this.set("motivations", Value.fromBigInt(value));
+  set motivations(value: i32) {
+    this.set("motivations", Value.fromI32(value));
   }
 
-  get superMotivations(): BigInt {
+  get superMotivations(): i32 {
     let value = this.get("superMotivations");
-    return value!.toBigInt();
+    return value!.toI32();
   }
 
-  set superMotivations(value: BigInt) {
-    this.set("superMotivations", Value.fromBigInt(value));
+  set superMotivations(value: i32) {
+    this.set("superMotivations", Value.fromI32(value));
   }
 }
 

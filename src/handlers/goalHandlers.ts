@@ -16,7 +16,11 @@ import {
   GOAL_MESSAGE_TYPE_MESSAGE_POSTED,
   GOAL_MESSAGE_TYPE_PROOF_POSTED,
 } from "../constants";
-import { createMessage, loadOrCreateGoal } from "../utils";
+import {
+  createMessage,
+  getAccountWithUpdatedReputation,
+  loadOrCreateGoal,
+} from "../utils";
 
 /**
  * Handle a tranfer event to create a goal with default values.
@@ -56,6 +60,8 @@ export function handleSet(event: Set): void {
   // Update goal messages number
   goal.messagesNumber = goal.messagesNumber + 1;
   goal.save();
+  // Update account reputation
+  getAccountWithUpdatedReputation(goal.authorAddress, 1, 0, 0, 0, 0).save();
 }
 
 /**
@@ -141,6 +147,15 @@ export function handleMessageEvaluated(event: MessageEvaluated): void {
   message.isMotivating = event.params.message.isMotivating;
   message.isSuperMotivating = event.params.message.isSuperMotivating;
   message.save();
+  // Update account reputation
+  getAccountWithUpdatedReputation(
+    message.authorAddress,
+    0,
+    0,
+    0,
+    message.isMotivating ? 1 : 0,
+    message.isSuperMotivating ? 1 : 0
+  ).save();
 }
 
 /**
@@ -167,6 +182,8 @@ export function handleClosedAsAchieved(event: ClosedAsAchieved): void {
   // Update goal messages number
   goal.messagesNumber = goal.messagesNumber + 1;
   goal.save();
+  // Update account reputation
+  getAccountWithUpdatedReputation(goal.authorAddress, 0, 1, 0, 0, 0).save();
 }
 
 /**
@@ -193,4 +210,6 @@ export function handleClosedAsFailed(event: ClosedAsFailed): void {
   // Update goal messages number
   goal.messagesNumber = goal.messagesNumber + 1;
   goal.save();
+  // Update account reputation
+  getAccountWithUpdatedReputation(goal.authorAddress, 0, 0, 1, 0, 0).save();
 }
