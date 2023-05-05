@@ -8,7 +8,7 @@ export function loadOrCreateAccount(accountAddress: string): Account {
     account = new Account(accountId);
     // Defaults for profile
     account.profileId = "";
-    account.profileCreatedTimestamp = BigInt.zero();
+    account.profileCreatedTimestamp = 0;
     account.profileUri = "";
     // Defaults for reputation
     account.goals = 0;

@@ -7,7 +7,7 @@ import { loadOrCreateAccount } from "../utils";
 export function handleTransfer(event: Transfer): void {
   let account = loadOrCreateAccount(event.params.to.toHexString());
   account.profileId = event.params.tokenId.toString();
-  account.profileCreatedTimestamp = event.block.timestamp;
+  account.profileCreatedTimestamp = event.block.timestamp.toI32();
   account.save();
 }
 

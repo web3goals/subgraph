@@ -2,7 +2,7 @@ type Account @entity {
   id: ID! # account address
   # Profile
   profileId: String!
-  profileCreatedTimestamp: BigInt!
+  profileCreatedTimestamp: Int!
   profileUri: String!
   # Reputation
   goals: Int!

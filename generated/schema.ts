@@ -51,13 +51,13 @@ export class Account extends Entity {
     this.set("profileId", Value.fromString(value));
   }
 
-  get profileCreatedTimestamp(): BigInt {
+  get profileCreatedTimestamp(): i32 {
     let value = this.get("profileCreatedTimestamp");
-    return value!.toBigInt();
+    return value!.toI32();
   }
 
-  set profileCreatedTimestamp(value: BigInt) {
-    this.set("profileCreatedTimestamp", Value.fromBigInt(value));
+  set profileCreatedTimestamp(value: i32) {
+    this.set("profileCreatedTimestamp", Value.fromI32(value));
   }
 
   get profileUri(): string {
