@@ -651,6 +651,16 @@ export class Goal__getParamsResultValue0Struct extends ethereum.Tuple {
   }
 }
 
+export class Goal__getProofsResultValue0Struct extends ethereum.Tuple {
+  get addedTimestamp(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get extraDataURI(): string {
+    return this[1].toString();
+  }
+}
+
 export class Goal__getReputationResult {
   value0: BigInt;
   value1: BigInt;
@@ -764,29 +774,6 @@ export class Goal extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  getKeeperAddress(): Address {
-    let result = super.call(
-      "getKeeperAddress",
-      "getKeeperAddress():(address)",
-      []
-    );
-
-    return result[0].toAddress();
-  }
-
-  try_getKeeperAddress(): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "getKeeperAddress",
-      "getKeeperAddress():(address)",
-      []
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   getMessages(tokenId: BigInt): Array<Goal__getMessagesResultValue0Struct> {
@@ -928,6 +915,33 @@ export class Goal extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  getProofs(tokenId: BigInt): Array<Goal__getProofsResultValue0Struct> {
+    let result = super.call(
+      "getProofs",
+      "getProofs(uint256):((uint256,string)[])",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+
+    return result[0].toTupleArray<Goal__getProofsResultValue0Struct>();
+  }
+
+  try_getProofs(
+    tokenId: BigInt
+  ): ethereum.CallResult<Array<Goal__getProofsResultValue0Struct>> {
+    let result = super.tryCall(
+      "getProofs",
+      "getProofs(uint256):((uint256,string)[])",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTupleArray<Goal__getProofsResultValue0Struct>()
+    );
+  }
+
   getReputation(accountAddress: Address): Goal__getReputationResult {
     let result = super.call(
       "getReputation",
@@ -963,27 +977,27 @@ export class Goal extends ethereum.SmartContract {
     );
   }
 
-  getUsageFeePercent(): BigInt {
+  getTreasuryAddress(): Address {
     let result = super.call(
-      "getUsageFeePercent",
-      "getUsageFeePercent():(uint256)",
+      "getTreasuryAddress",
+      "getTreasuryAddress():(address)",
       []
     );
 
-    return result[0].toBigInt();
+    return result[0].toAddress();
   }
 
-  try_getUsageFeePercent(): ethereum.CallResult<BigInt> {
+  try_getTreasuryAddress(): ethereum.CallResult<Address> {
     let result = super.tryCall(
-      "getUsageFeePercent",
-      "getUsageFeePercent():(uint256)",
+      "getTreasuryAddress",
+      "getTreasuryAddress():(address)",
       []
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   isApprovedForAll(owner: Address, operator: Address): boolean {
@@ -1261,12 +1275,8 @@ export class InitializeCall__Inputs {
     return this._call.inputValues[0].value.toAddress();
   }
 
-  get keeperAddress(): Address {
+  get treasuryAddress(): Address {
     return this._call.inputValues[1].value.toAddress();
-  }
-
-  get usageFeePercent(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
   }
 }
 
@@ -1588,36 +1598,6 @@ export class SetImageSVGCall__Outputs {
   }
 }
 
-export class SetKeeperAddressCall extends ethereum.Call {
-  get inputs(): SetKeeperAddressCall__Inputs {
-    return new SetKeeperAddressCall__Inputs(this);
-  }
-
-  get outputs(): SetKeeperAddressCall__Outputs {
-    return new SetKeeperAddressCall__Outputs(this);
-  }
-}
-
-export class SetKeeperAddressCall__Inputs {
-  _call: SetKeeperAddressCall;
-
-  constructor(call: SetKeeperAddressCall) {
-    this._call = call;
-  }
-
-  get keeperAddress(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-}
-
-export class SetKeeperAddressCall__Outputs {
-  _call: SetKeeperAddressCall;
-
-  constructor(call: SetKeeperAddressCall) {
-    this._call = call;
-  }
-}
-
 export class SetProfileAddressCall extends ethereum.Call {
   get inputs(): SetProfileAddressCall__Inputs {
     return new SetProfileAddressCall__Inputs(this);
@@ -1648,32 +1628,32 @@ export class SetProfileAddressCall__Outputs {
   }
 }
 
-export class SetUsageFeePercentCall extends ethereum.Call {
-  get inputs(): SetUsageFeePercentCall__Inputs {
-    return new SetUsageFeePercentCall__Inputs(this);
+export class SetTreasuryAddressCall extends ethereum.Call {
+  get inputs(): SetTreasuryAddressCall__Inputs {
+    return new SetTreasuryAddressCall__Inputs(this);
   }
 
-  get outputs(): SetUsageFeePercentCall__Outputs {
-    return new SetUsageFeePercentCall__Outputs(this);
+  get outputs(): SetTreasuryAddressCall__Outputs {
+    return new SetTreasuryAddressCall__Outputs(this);
   }
 }
 
-export class SetUsageFeePercentCall__Inputs {
-  _call: SetUsageFeePercentCall;
+export class SetTreasuryAddressCall__Inputs {
+  _call: SetTreasuryAddressCall;
 
-  constructor(call: SetUsageFeePercentCall) {
+  constructor(call: SetTreasuryAddressCall) {
     this._call = call;
   }
 
-  get usageFeePercent(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
+  get treasuryAddress(): Address {
+    return this._call.inputValues[0].value.toAddress();
   }
 }
 
-export class SetUsageFeePercentCall__Outputs {
-  _call: SetUsageFeePercentCall;
+export class SetTreasuryAddressCall__Outputs {
+  _call: SetTreasuryAddressCall;
 
-  constructor(call: SetUsageFeePercentCall) {
+  constructor(call: SetTreasuryAddressCall) {
     this._call = call;
   }
 }
