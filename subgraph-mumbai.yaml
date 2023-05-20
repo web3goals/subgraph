@@ -6,9 +6,9 @@ dataSources:
     name: Profile
     network: mumbai
     source:
-      address: "0xd741699cACFE7a368EA0481EDCe157833314D815"
+      address: "0x3bF65fD1C19Bb46da8378bd41576b70aDBD40EA0"
       abi: Profile
-      startBlock: 35787972
+      startBlock: 35827393
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -29,9 +29,9 @@ dataSources:
     name: Goal
     network: mumbai
     source:
-      address: "0x4aB978BFe68FBfc097D37D01D417736Ef6FFf450"
+      address: "0xAFA21ef551C0D64A9Fe70cBb6c8160B7A42D3c2d"
       abi: Goal
-      startBlock: 35787981
+      startBlock: 35827406
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
