@@ -2,15 +2,18 @@
 
 ## Subgraph links
 
-- Mumbai Development - https://thegraph.com/hosted-service/subgraph/kiv1n/web3-goals-dev
-- Mumbai Production - https://thegraph.com/hosted-service/subgraph/kiv1n/web3-goals
+- Development (Mumbai) - https://thegraph.com/hosted-service/subgraph/kiv1n/web3-goals-dev
+- Production (Polygon) - https://thegraph.com/hosted-service/subgraph/kiv1n/web3-goals
 
-## Commands
+## Commands for development
 
 - Install Graph CLI: `yarn global add @graphprotocol/graph-cli`
 - Install dependencies: `yarn install`
 - Set deployment key: `graph auth`
-- Update generated code: `yarn codegen-mumbai`
-- Deploy to mumbai development subgraph: `yarn deploy-mumbai`
-- Deploy to mumbai development subgraph with production config: `yarn deploy-mumbai-production`
-- Deploy to mumbai production subgraph: `graph deploy --node https://api.thegraph.com/deploy/ kiv1n/web3-goals subgraph-mumbai-production.yaml`
+- Generate code for subgraph: `yarn codegen`
+- Deploy to subgraph: `yarn deploy`
+
+### Commands for production
+
+- Generate code for subgraph: `graph codegen subgraph-polygon.yaml`
+- Deploy to subgraph: `graph deploy --node https://api.thegraph.com/deploy/ kiv1n/web3-goals subgraph-polygon.yaml`
